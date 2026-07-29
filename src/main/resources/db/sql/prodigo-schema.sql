@@ -146,3 +146,17 @@ ALTER TABLE "RolePermission"
     ADD CONSTRAINT fk_rolepermission_permission
         FOREIGN KEY("permission_id") REFERENCES "Permission"("id")
             ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS "refresh_token" (
+    "id" BIGSERIAL PRIMARY KEY NOT NULL,
+    "token" TEXT NOT NULL,
+    "user_id" BIGINT NOT NULL,
+    "expiry_date" TIMESTAMP NOT NULL,
+    "is_revoked" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+
+ALTER TABLE "refresh_token"
+    ADD CONSTRAINT fk_refreshtoken_user
+        FOREIGN KEY("user_id") REFERENCES "user"("id")
+            ON DELETE CASCADE;

@@ -1,5 +1,6 @@
 package com.licode.prodigoerp.user.entity;
 
+import com.licode.prodigoerp.auth.entity.RefreshToken;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -66,6 +67,10 @@ public class User {
     @NotNull
     @Column(name = "last_login", nullable = false)
     private Instant lastLogin;
+
+    @NotNull
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
