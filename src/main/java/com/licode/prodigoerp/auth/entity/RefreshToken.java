@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -16,19 +14,19 @@ import java.time.Instant;
 @Entity
 @Table(name = "refresh_token")
 public class RefreshToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
     @NotNull
-    @Column(name = "token", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "token", nullable = false, columnDefinition = "TEXT")
     private String token;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     @NotNull
@@ -44,6 +42,4 @@ public class RefreshToken {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
-
-
 }

@@ -29,7 +29,7 @@ public class User {
     private String username;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;

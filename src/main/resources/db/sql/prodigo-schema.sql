@@ -49,7 +49,7 @@ ALTER TABLE "ModuleSubscription"
 CREATE TABLE IF NOT EXISTS "user" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "username" VARCHAR(20) NOT NULL UNIQUE,
-    "tenant_id" BIGINT NOT NULL UNIQUE,
+    "tenant_id" BIGINT NOT NULL,
     "email" VARCHAR(150) NOT NULL UNIQUE,
     "password" VARCHAR(255) NOT NULL,
     "first_name" VARCHAR(150) NOT NULL,
