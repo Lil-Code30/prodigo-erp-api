@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.user.service;
+package com.licode.prodigoerp.common.security;
 
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.entity.UserPrincipal;
@@ -25,18 +25,28 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRoleRepository userRoleRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       User user = userRepository.findUserByUsername(username)
-               .orElseThrow(() -> new UsernameNotFoundException("User details not found for the user: " + username));
+    public UserDetails loadUserByUsername(String username){
 
-        List<String> roles = userRoleRepository.findActiveRoleNameByUserId(user.getId());
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return buildPrincipal(user);
+    }
+
+    public UserPrincipal buildPrincipal(User user){
+
+        List<String> roles = userRoleRepository.findActiveRoleNamesByUserId(user.getId());
         List<String> permissions = userRoleRepository.findActivePermissionCodesByUserId(user.getId());
 
+
+        // concatenating the roles and permissions in one collection to be used as granted authority
         Collection<GrantedAuthority> authorities = Stream.concat(
-                roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)),
-                permissions.stream().map(p -> new SimpleGrantedAuthority("PERM_" + p))
-        ).collect(Collectors.toSet());
+                roles.stream().map(r -> "ROLE_" + r),
+                permissions.stream().map(p -> "PERM_" + p)
+        ).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
 
         return new UserPrincipal(user, authorities);
     }
+
+
 }

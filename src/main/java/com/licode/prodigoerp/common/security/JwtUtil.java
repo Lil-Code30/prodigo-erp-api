@@ -1,9 +1,12 @@
 package com.licode.prodigoerp.common.security;
 
+import com.licode.prodigoerp.common.exception.JwtValidationException;
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.entity.UserPrincipal;
 import com.licode.prodigoerp.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -30,12 +33,8 @@ public class JwtUtil {
     @Value("${security.jwt.expiration}")
     private long jwtExpiration;
 
-    @Value("${security.jwt.refresh-expiration}")
-    private long refreshExpiration;
-
     private SecretKey key;
 
-    private final UserRepository userRepository;
 
     @PostConstruct
     public void init() {
@@ -45,27 +44,11 @@ public class JwtUtil {
     /**
      * Generate Access Token
      */
-    public String generateToken(User user) {
-        return Jwts.builder().issuer("Prodigo")
-                .subject("Prodigo API JWT")
-                .claim("userId", user.getId())
-                .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("tenantId", user.getTenant().getId())
-                .claim("tenantSlug" , user.getTenant().getSlug())
-                .issuedAt(new Date())
-                .expiration(new Date( System.currentTimeMillis() + jwtExpiration))
-                .signWith(key)
-                .compact();
-    }
+    public String generateAccessToken(UserPrincipal principal) {
 
-    /**
-     * Generate Refresh Token
-     */
-    public String generateRefreshToken(Authentication authentication) {
+        var user = principal.getUser();
 
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal()
-
+        // Going to loop through the authorities, then find all authorities starting with "ROLE_"
         List<String> roles = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(a -> a.startsWith("ROLE_"))
@@ -78,41 +61,66 @@ public class JwtUtil {
                 .map(a -> a.substring(5))
                 .toList();
 
-        return Jwts.builder().issuer("Prodigo")
-                .subject("Prodigo Refresh Token")
+        return Jwts.builder()
+                .issuer("Prodigo")
+                .subject(String.valueOf(user.getId()))
+                .claim("type", "access")
                 .claim("userId", user.getId())
+                .claim("username", user.getUsername())
+                .claim("email", user.getEmail())
+                .claim("tenantId", user.getTenant().getId())
+                .claim("tenantSlug", user.getTenant().getSlug())
                 .claim("roles", roles)
                 .claim("permissions", permissions)
-                .claim("tenantId", user.getTenant().getId())
-                .claim("tenantSlug" , user.getTenant().getSlug())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().verifyWith(key).build()
-                .parseSignedClaims(token)
-                .getPayload();
 
-        return String.valueOf(claims.get("username"));
+        try {
+            Claims claims = Jwts.parser().verifyWith(key).build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            return String.valueOf(claims.get("username"));
+        } catch (ExpiredJwtException e) {
+            throw new JwtValidationException("Token expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtValidationException("Invalid token", e);
+        }
     }
 
     public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser().verifyWith(key).build()
-                .parseSignedClaims(token)
-                .getPayload();
 
-        return claims.get("userId",  Long.class);
+        try {
+            Claims claims = Jwts.parser().verifyWith(key).build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            return claims.get("userId",  Long.class);
+        } catch (ExpiredJwtException e) {
+            throw new JwtValidationException("Token expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtValidationException("Invalid token", e);
+        }
     }
 
     public Long getTenantIdFromToken(String token) {
-        Claims claims = Jwts.parser().verifyWith(key).build()
-                .parseSignedClaims(token)
-                .getPayload();
 
-        return claims.get("tenantId",  Long.class);
+        try {
+            Claims claims = Jwts.parser().verifyWith(key).build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            return claims.get("tenantId",  Long.class);
+        } catch (ExpiredJwtException e) {
+            throw new JwtValidationException("Token expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtValidationException("Invalid token", e);
+        }
     }
 
     public boolean validateToken(String token) {
@@ -127,6 +135,22 @@ public class JwtUtil {
         }
 
         return false;
+    }
+
+    public long getExpirationSeconds() {
+        return jwtExpiration / 1000;
+    }
+
+    public Claims parseClaims(String token) {
+        try {
+            return Jwts.parser().verifyWith(key).build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new JwtValidationException("Token expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtValidationException("Invalid token", e);
+        }
     }
 
 }
