@@ -21,6 +21,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -50,13 +51,13 @@ public class JwtUtil {
 
         // Going to loop through the authorities, then find all authorities starting with "ROLE_"
         List<String> roles = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+                .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
                 .filter(a -> a.startsWith("ROLE_"))
                 .map(a -> a.substring(5))
                 .toList();
 
         List<String> permissions = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+                .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
                 .filter(a -> a.startsWith("PERM_"))
                 .map(a -> a.substring(5))
                 .toList();
