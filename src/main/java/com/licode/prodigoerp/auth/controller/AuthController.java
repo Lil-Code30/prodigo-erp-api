@@ -1,6 +1,7 @@
 package com.licode.prodigoerp.auth.controller;
 
 import com.licode.prodigoerp.auth.dto.AuthResponse;
+import com.licode.prodigoerp.auth.dto.LoginRequest;
 import com.licode.prodigoerp.auth.dto.RegisterRequest;
 import com.licode.prodigoerp.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -22,5 +23,11 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
         return ResponseEntity.ok().body(authService.register(registerRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+
+        return ResponseEntity.ok().body(authService.login(loginRequest));
     }
 }
