@@ -16,7 +16,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +28,9 @@ public class User {
     @Column(name = "username", nullable = false, length = 20)
     private String username;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "tenant_id", nullable = false)
+    @JoinColumn(name = "tenant_id", nullable = true)
     private Tenant tenant;
 
     @Size(max = 150)
@@ -64,11 +63,11 @@ public class User {
     @Column(name = "is_super_admin", nullable = false)
     private Boolean isSuperAdmin;
 
-    @NotNull
-    @Column(name = "last_login", nullable = false)
+
+    @Column(name = "last_login", nullable = true)
     private Instant lastLogin;
 
-    @NotNull
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
@@ -77,8 +76,8 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @NotNull
-    @Column(name = "updated_at", nullable = false)
+
+    @Column(name = "updated_at", nullable = true)
     private Instant updatedAt;
 
     @Size(max = 100)
@@ -87,8 +86,7 @@ public class User {
     private String createdBy;
 
     @Size(max = 100)
-    @NotNull
-    @Column(name = "updated_by", nullable = false, length = 100)
+    @Column(name = "updated_by", nullable = true, length = 100)
     private String updatedBy;
 
 

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "Tenant" (
+CREATE TABLE IF NOT EXISTS "tenants" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY UNIQUE,
     "name" VARCHAR(255) NOT NULL,
     "slug" VARCHAR(255) NOT NULL UNIQUE,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "Tenant" (
     "updated_by" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "Module" (
+CREATE TABLE IF NOT EXISTS "modules" (
    "id" BIGSERIAL NOT NULL PRIMARY KEY ,
    "name" VARCHAR(150) NOT NULL UNIQUE,
    "module_key" VARCHAR(255) NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "Module" (
    "updated_by" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "ModuleSubscription" (
+CREATE TABLE IF NOT EXISTS "module_subscriptions" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "tenant_id" BIGINT NOT NULL,
     "module_id" BIGINT NOT NULL,
@@ -35,21 +35,21 @@ CREATE TABLE IF NOT EXISTS "ModuleSubscription" (
     UNIQUE("tenant_id", "module_id")
 );
 
-ALTER TABLE "ModuleSubscription"
+ALTER TABLE "module_subscriptions"
     ADD CONSTRAINT fk_modulesubscription_module
-        FOREIGN KEY ("module_id") REFERENCES "Module"("id")
+        FOREIGN KEY ("module_id") REFERENCES "modules"("id")
             ON DELETE CASCADE;
 
-ALTER TABLE "ModuleSubscription"
+ALTER TABLE "module_subscriptions"
     ADD CONSTRAINT fk_modulesubscription_tenant
-        FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id")
+        FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id")
             ON DELETE CASCADE;
 
 
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS "users" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "username" VARCHAR(20) NOT NULL UNIQUE,
-    "tenant_id" BIGINT NOT NULL,
+    "tenant_id" BIGINT,
     "email" VARCHAR(150) NOT NULL UNIQUE,
     "password" VARCHAR(255) NOT NULL,
     "first_name" VARCHAR(150) NOT NULL,
@@ -63,13 +63,13 @@ CREATE TABLE IF NOT EXISTS "user" (
     "updated_by" VARCHAR(100) NOT NULL
 );
 
-ALTER TABLE "user"
+ALTER TABLE "users"
     ADD CONSTRAINT fk_user_tenant
-        FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id")
+        FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id")
             ON DELETE CASCADE;
 
 
-CREATE TABLE IF NOT EXISTS "Role" (
+CREATE TABLE IF NOT EXISTS "roles" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "tenant_id" BIGINT,
     "name" VARCHAR(20) NOT NULL,
@@ -81,13 +81,13 @@ CREATE TABLE IF NOT EXISTS "Role" (
     "updated_by" VARCHAR(100) NOT NULL
 );
 
-ALTER TABLE "Role"
+ALTER TABLE "roles"
     ADD CONSTRAINT fk_role_tenant
-        FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id")
+        FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id")
             ON DELETE CASCADE ;
 
 -- NOTE: here tenantId can be null meaning if it happens to be null, this will be consider as a role of the system itself
-CREATE TABLE IF NOT EXISTS "UserRole" (
+CREATE TABLE IF NOT EXISTS "user_roles" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "user_id" BIGINT NOT NULL,
     "role_id" BIGINT NOT NULL,
@@ -98,18 +98,18 @@ CREATE TABLE IF NOT EXISTS "UserRole" (
     UNIQUE("user_id", "role_id")
 );
 
-ALTER TABLE "UserRole"
+ALTER TABLE "user_roles"
     ADD CONSTRAINT fk_userrole_user
-        FOREIGN KEY ("user_id") REFERENCES "user"("id")
+        FOREIGN KEY ("user_id") REFERENCES "users"("id")
             ON DELETE CASCADE;
 
-ALTER TABLE "UserRole"
+ALTER TABLE "user_roles"
     ADD CONSTRAINT fk_userrole_role
-        FOREIGN KEY ("role_id") REFERENCES "Role"("id")
+        FOREIGN KEY ("role_id") REFERENCES "roles"("id")
             ON DELETE CASCADE;
 
 
-CREATE TABLE IF NOT EXISTS "Permission" (
+CREATE TABLE IF NOT EXISTS "permissions" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "code" VARCHAR(50) NOT NULL UNIQUE,
     "description" TEXT,
@@ -122,13 +122,13 @@ CREATE TABLE IF NOT EXISTS "Permission" (
     "updated_by" VARCHAR(100) NOT NULL
 );
 
-ALTER TABLE "Permission"
+ALTER TABLE "permissions"
     ADD CONSTRAINT fk_permission_module
-        FOREIGN KEY("module_id") REFERENCES "Module"("id")
+        FOREIGN KEY("module_id") REFERENCES "modules"("id")
             ON DELETE CASCADE;
 
 
-CREATE TABLE IF NOT EXISTS "RolePermission" (
+CREATE TABLE IF NOT EXISTS "role_permissions" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "role_id" BIGINT NOT NULL,
     "permission_id" BIGINT NOT NULL,
@@ -137,17 +137,17 @@ CREATE TABLE IF NOT EXISTS "RolePermission" (
     UNIQUE ("role_id", "permission_id")
 );
 
-ALTER TABLE "RolePermission"
+ALTER TABLE "role_permissions"
     ADD CONSTRAINT fk_rolepermission_role
-        FOREIGN KEY ("role_id") REFERENCES "Role"("id")
+        FOREIGN KEY ("role_id") REFERENCES "roles"("id")
             ON DELETE CASCADE;
 
-ALTER TABLE "RolePermission"
+ALTER TABLE "role_permissions"
     ADD CONSTRAINT fk_rolepermission_permission
-        FOREIGN KEY("permission_id") REFERENCES "Permission"("id")
+        FOREIGN KEY("permission_id") REFERENCES "permissions"("id")
             ON DELETE CASCADE;
 
-CREATE TABLE IF NOT EXISTS "refresh_token" (
+CREATE TABLE IF NOT EXISTS "refresh_tokens" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "token" TEXT NOT NULL,
     "user_id" BIGINT NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS "refresh_token" (
     "created_at" TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
-ALTER TABLE "refresh_token"
+ALTER TABLE "refresh_tokens"
     ADD CONSTRAINT fk_refreshtoken_user
-        FOREIGN KEY("user_id") REFERENCES "user"("id")
+        FOREIGN KEY("user_id") REFERENCES "users"("id")
             ON DELETE CASCADE;

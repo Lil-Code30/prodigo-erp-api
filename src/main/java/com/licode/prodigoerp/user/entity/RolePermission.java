@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "RolePermission")
+@Table(name = "role_permissions")
 public class RolePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

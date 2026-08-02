@@ -15,7 +15,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "Role")
+@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +37,7 @@ public class Role {
 
     @NotNull
     @ColumnDefault("false")
-    @Column(name = "\"isDefault\"", nullable = false)
+    @Column(name = "isDefault", nullable = false)
     private Boolean isDefault;
 
     @NotNull

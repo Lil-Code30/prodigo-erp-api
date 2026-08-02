@@ -15,7 +15,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "ModuleSubscription")
+@Table(name = "module_subscription")
 public class ModuleSubscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "UserRole")
+@Table(name = "user_roles")
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class UserRole {
     @Column(name = "assigned_at", nullable = false)
     private Instant assignedAt;
 
-    @Column(name = "expires_at")
+    @Column(name = "expires_at", nullable = true)
     private Instant expiresAt;
 
 
