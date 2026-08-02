@@ -24,8 +24,8 @@ public class AuthExceptionHandler{
                 .body(Map.of("error", "Invalid username or password"));
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class})
-    public ResponseEntity<Map<String, Object>> handleNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+    @ExceptionHandler({UsernameNotFoundException.class, NotFoundException.class})
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException ex, WebRequest request) {
 
         Map<String,Object> body = new HashMap<>();
 
@@ -53,6 +53,15 @@ public class AuthExceptionHandler{
         body.put("details", ex.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex) {
+        Map<String,Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
