@@ -3,6 +3,7 @@ package com.licode.prodigoerp.auth.service;
 import com.licode.prodigoerp.auth.dto.AuthResponse;
 import com.licode.prodigoerp.auth.dto.LoginRequest;
 import com.licode.prodigoerp.auth.dto.RegisterRequest;
+import com.licode.prodigoerp.auth.entity.RefreshToken;
 import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
@@ -11,7 +12,6 @@ import com.licode.prodigoerp.tenant.mapper.TenantMapper;
 import com.licode.prodigoerp.tenant.repository.TenantRepository;
 import com.licode.prodigoerp.user.entity.Role;
 import com.licode.prodigoerp.user.entity.User;
-import com.licode.prodigoerp.user.entity.UserRole;
 import com.licode.prodigoerp.user.mapper.UserMapper;
 import com.licode.prodigoerp.user.repository.UserRepository;
 import com.licode.prodigoerp.user.service.RoleService;
@@ -37,6 +37,7 @@ public class AuthService {
     private final UserService userService;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -71,20 +72,28 @@ public class AuthService {
         Tenant fetchedTenant =  tenantRepository.save(newTenant);
 
         // creating user infos
-
         User newUser = userMapper.toEntity(
                 registerRequest,
                 fetchedTenant,
                 now,
-                false);
+                false
+                );
 
+
+
+        // NOTE: if I don't save the user first before generating a refreshToken, there will be an error
+        userRepository.save(newUser);
+        RefreshToken refreshToken = refreshTokenService.issueFor(newUser);
+
+        newUser.getRefreshToken().add(refreshToken);
         User fetchedUser = userRepository.save(newUser);
+
 
         // we need to now create the ADMIN ROLE
         Role adminRole = roleService.createAdminRole(fetchedTenant);
 
         // Then we need to associate the admin role to the user
-        UserRole userRole = roleService.assignedRoleToUser(
+        roleService.assignedRoleToUser(
                 fetchedUser,
                 adminRole,
                 fetchedTenant.getId(),
@@ -92,7 +101,7 @@ public class AuthService {
         );
 
 
-        return userMapper.toAuthResponse(fetchedUser);
+        return userMapper.toAuthResponse(fetchedUser, refreshToken.getToken());
     }
 
 
@@ -110,7 +119,11 @@ public class AuthService {
            throw new NotFoundException("User not found");
        }
 
+       // TODO : Need to figure out how to manage the refresh token system
+        // don't want a new refresh token for every login
+       RefreshToken refreshToken = refreshTokenService.issueFor(user.get());
 
-        return userMapper.toAuthResponse(user.get());
+
+        return userMapper.toAuthResponse(user.get(),  refreshToken.getToken());
     }
 }

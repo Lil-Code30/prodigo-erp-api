@@ -3,6 +3,7 @@ package com.licode.prodigoerp.common.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +25,7 @@ public class AuthExceptionHandler{
                 .body(Map.of("error", "Invalid username or password"));
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class, NotFoundException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, NotFoundException.class, InternalAuthenticationServiceException.class})
     public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException ex, WebRequest request) {
 
         Map<String,Object> body = new HashMap<>();
