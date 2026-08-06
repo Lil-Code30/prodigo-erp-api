@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -27,7 +28,7 @@ public class AuthExceptionHandler{
     }
 
     @ExceptionHandler({UsernameNotFoundException.class, NotFoundException.class, InternalAuthenticationServiceException.class})
-    public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException ex, WebRequest request) {
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(Exception ex, WebRequest request) {
 
         Map<String,Object> body = new HashMap<>();
 
@@ -39,8 +40,8 @@ public class AuthExceptionHandler{
 
     }
 
-    @ExceptionHandler(JwtValidationException.class)
-    public ResponseEntity<Map<String, String>> handleJwtInvalid(JwtValidationException ex) {
+    @ExceptionHandler({JwtValidationException.class, MissingRequestCookieException.class})
+    public ResponseEntity<Map<String, String>> handleInvalidAccess(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", ex.getMessage()));
     }

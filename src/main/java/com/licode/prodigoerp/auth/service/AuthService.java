@@ -2,21 +2,27 @@ package com.licode.prodigoerp.auth.service;
 
 import com.licode.prodigoerp.auth.dto.AuthResponse;
 import com.licode.prodigoerp.auth.dto.LoginRequest;
+import com.licode.prodigoerp.auth.dto.RefreshResponse;
 import com.licode.prodigoerp.auth.dto.RegisterRequest;
 import com.licode.prodigoerp.auth.entity.RefreshToken;
 import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
+import com.licode.prodigoerp.common.security.CustomUserDetailsService;
+import com.licode.prodigoerp.common.security.JwtUtil;
+import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.mapper.TenantMapper;
 import com.licode.prodigoerp.tenant.repository.TenantRepository;
 import com.licode.prodigoerp.user.entity.Role;
 import com.licode.prodigoerp.user.entity.User;
+import com.licode.prodigoerp.user.entity.UserPrincipal;
 import com.licode.prodigoerp.user.mapper.UserMapper;
 import com.licode.prodigoerp.user.repository.UserRepository;
 import com.licode.prodigoerp.user.service.RoleService;
 import com.licode.prodigoerp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +44,8 @@ public class AuthService {
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -125,5 +133,46 @@ public class AuthService {
 
 
         return userMapper.toAuthResponse(user.get(),  refreshToken.getToken());
+    }
+
+    ///NOTE: for the refresh token flow
+    /// The refresh token string (from the request)
+    /// With this string, we can find the RefreshToken object that will also contain the user infos
+    /// If a wrong refresh token string is send by the request, we will not be able to find the user
+    /// leading to no generation of the new access token
+    @Transactional
+    public RefreshResponse refreshAccessToken(String token) {
+
+      Optional<RefreshToken> refreshToken  = refreshTokenService.getRefreshTokenByTokenString(token);
+
+      if( refreshToken.isEmpty()){
+          throw new NotFoundException("Refresh token not found");
+      }
+
+      RefreshToken refreshToken1 = refreshToken.get();
+
+
+      // need to do verification to be sure the Refresh token is a valid Token
+      if(refreshToken1.getIsRevoked()){
+          throw new AccessDeniedException("Access Denied! Refresh token is revoked");
+      }
+
+      if(refreshToken1.getExpiryDate().isBefore(Instant.now())){
+          throw new BadCredentialsException("Bad credentials! Your token has expired");
+      }
+
+      User user = refreshToken1.getUser();
+
+        UserPrincipal userPrincipal = customUserDetailsService.buildPrincipal(user);
+
+        String accessToken = jwtUtil.generateAccessToken(userPrincipal);
+
+        // NOTE: before issuing any new refresh token, revoke the old ones
+        refreshTokenService.revoke(refreshToken1.getToken());
+
+        RefreshToken newRefreshToken = refreshTokenService.issueFor(user);
+
+        return new RefreshResponse(accessToken, newRefreshToken.getToken());
+
     }
 }

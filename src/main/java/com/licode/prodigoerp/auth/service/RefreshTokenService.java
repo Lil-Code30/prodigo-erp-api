@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +56,9 @@ public class RefreshTokenService {
         return Base64.getUrlEncoder()
                 .withoutPadding()
                 .encodeToString(randomBytes);
+    }
+
+    public Optional<RefreshToken> getRefreshTokenByTokenString(String token) {
+        return  refreshTokenRepository.findByToken(token);
     }
 }

@@ -39,7 +39,7 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
-    public UserRole assignedRoleToUser(User user, Role role, Long tenantId, String assignedBy) {
+    public void assignedRoleToUser(User user, Role role, Long tenantId, String assignedBy) {
 
         UserRole userRole = new UserRole();
 
@@ -49,6 +49,6 @@ public class RoleService {
         userRole.setAssignedBy(assignedBy);
         userRole.setAssignedAt(Instant.now());
 
-        return userRoleRepository.save(userRole);
+        userRoleRepository.save(userRole);
     }
 }
