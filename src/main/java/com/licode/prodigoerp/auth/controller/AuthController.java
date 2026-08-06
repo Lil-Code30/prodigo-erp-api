@@ -5,11 +5,13 @@ import com.licode.prodigoerp.auth.dto.LoginRequest;
 import com.licode.prodigoerp.auth.dto.RefreshResponse;
 import com.licode.prodigoerp.auth.dto.RegisterRequest;
 import com.licode.prodigoerp.auth.service.AuthService;
+import com.licode.prodigoerp.auth.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -20,6 +22,7 @@ import java.time.Duration;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/register", version = "1.0")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
@@ -69,6 +72,26 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(refreshResponse);
+
+    }
+
+    @GetMapping(value = "/logout", version = "1.0")
+    public ResponseEntity<Void> logout(@CookieValue("refresh_token") String refreshToken) {
+
+        refreshTokenService.revoke(refreshToken);
+
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", null)
+                .httpOnly(true)
+                .path("/")
+                .secure(true)
+                .maxAge(0)
+                .sameSite("strict")
+                .build();
+
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).build();
 
     }
 }

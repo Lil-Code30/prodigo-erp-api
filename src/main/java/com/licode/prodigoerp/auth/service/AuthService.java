@@ -10,7 +10,6 @@ import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.common.security.CustomUserDetailsService;
 import com.licode.prodigoerp.common.security.JwtUtil;
-import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.mapper.TenantMapper;
 import com.licode.prodigoerp.tenant.repository.TenantRepository;
