@@ -20,6 +20,6 @@ public class PathConfig {
 
     @Bean("securePaths")
     public List<String> securePaths() {
-        return List.of("/api/v1/**");
+        return List.of("/api/1.0/**");
     }
 }
