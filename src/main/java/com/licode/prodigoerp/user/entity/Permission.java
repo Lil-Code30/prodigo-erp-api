@@ -40,10 +40,10 @@ public class Permission {
     @Column(name = "resource", nullable = false, length = 100)
     private String resource;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "module_id", nullable = false)
+    @JoinColumn(name = "module_id")
     private Module module;
 
     @NotNull
