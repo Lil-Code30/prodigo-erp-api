@@ -40,6 +40,16 @@ public class AuthExceptionHandler{
 
     }
 
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<Map<String, Object>> handleBadRequestException(Exception ex, WebRequest request) {
+        Map<String,Object> body = new HashMap<>();
+        body.put("message", ex.getMessage());
+        body.put("timestamp", LocalDateTime.now());
+        body.put("path", request.getDescription(false).replace("uri=", ""));
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({JwtValidationException.class, MissingRequestCookieException.class})
     public ResponseEntity<Map<String, String>> handleInvalidAccess(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
