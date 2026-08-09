@@ -38,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getIsActive();
+        return user.getStatus().equals("ACTIVE");
     }
 
 }

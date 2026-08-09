@@ -18,7 +18,7 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Tenant t SET t.isActive = :status WHERE t.slug = :slug")
-    void changeStatus(@NotBlank String slug, @NotBlank @Param("status") boolean status);
-    
+    @Query("UPDATE Tenant t SET t.status = :status WHERE t.slug = :slug")
+    void changeStatus(@NotBlank String slug, @NotBlank @Param("status") String status);
+
 }

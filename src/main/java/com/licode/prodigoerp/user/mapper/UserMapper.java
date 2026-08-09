@@ -34,7 +34,7 @@ public class UserMapper {
         user.setFirstName(registerRequest.firstName());
         user.setLastName(registerRequest.lastName());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
-        user.setIsActive(true);
+        user.setStatus("ACTIVE");
         user.setIsSuperAdmin(isSuperAdmin);
         user.setLastLogin(now);
 

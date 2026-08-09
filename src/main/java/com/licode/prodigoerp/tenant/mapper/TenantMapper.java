@@ -16,7 +16,7 @@ public class TenantMapper {
         tenant.setName(name);
         tenant.setSlug(slug);
         tenant.setCreatedBy(username);
-        tenant.setIsActive(true);
+        tenant.setStatus("ACTIVE");
         tenant.setCountry(country);
         tenant.setUpdatedBy(username);
         tenant.setCreatedAt(now);

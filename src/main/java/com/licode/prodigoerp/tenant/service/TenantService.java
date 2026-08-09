@@ -46,7 +46,7 @@ public class TenantService {
         return optionalTenant.get();
     }
 
-    public void changeTenantStatus(String slug, Boolean status) {
+    public void changeTenantStatus(String slug, String status) {
 
         // first check if a Tenant with this slug exist
         if(!tenantRepository.existsBySlug(slug)) {

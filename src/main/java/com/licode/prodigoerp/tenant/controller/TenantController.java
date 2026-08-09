@@ -37,7 +37,7 @@ public class TenantController {
     @PatchMapping(path = "/{slug}/status", version = "1.0")
     public ResponseEntity<Void> changeTenantStatus(@PathVariable String slug, @RequestBody String status) {
 
-        tenantService.changeTenantStatus(slug, status.contains("true"));
+        tenantService.changeTenantStatus(slug, status);
 
         return ResponseEntity.noContent().build();
     }

@@ -92,7 +92,7 @@ public class AuthService {
         userRepository.save(newUser);
         RefreshToken refreshToken = refreshTokenService.issueFor(newUser);
 
-        newUser.getRefreshToken().add(refreshToken);
+//        newUser.getRefreshToken().add(refreshToken);
         User fetchedUser = userRepository.save(newUser);
 
 
