@@ -6,6 +6,7 @@ import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/{version}/s/admin")
+@PreAuthorize("hasAuthority('PERM_ERP_CRUD')")
 @RequiredArgsConstructor
 public class AdminController {
 

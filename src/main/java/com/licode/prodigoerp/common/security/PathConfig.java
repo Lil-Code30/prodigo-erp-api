@@ -14,8 +14,7 @@ public class PathConfig {
                 "/api/1.0/auth/register",
                 "/api/1.0/auth/login",
                 "/api/1.0/auth/refresh",
-                "/api/1.0/auth/logout",
-                "/api/1.0/s/admin/**"
+                "/api/1.0/auth/logout"
         );
     }
 

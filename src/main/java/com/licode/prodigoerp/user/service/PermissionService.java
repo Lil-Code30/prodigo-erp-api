@@ -29,7 +29,7 @@ public class PermissionService {
     }
 
     @Transactional
-    public RolePermission assignPermissionToRole(Permission permission, Role role) {
+    public void assignPermissionToRole(Permission permission, Role role) {
 
         RolePermission rolePermission = new RolePermission();
 
@@ -38,6 +38,6 @@ public class PermissionService {
         rolePermission.setGrantedAt(Instant.now());
         rolePermission.setGrantedBy(SystemConstants.SYSTEM_NAME);
 
-        return rolePermissionRepository.save(rolePermission);
+        rolePermissionRepository.save(rolePermission);
     }
 }

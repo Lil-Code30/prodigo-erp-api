@@ -45,12 +45,12 @@ public class RoleService {
 
     @Transactional
     public Role createSuperAdminRole() {
-        String roleName = "SUPERADMIN";
+        String roleName = "SUPER_ADMIN";
         Instant now = Instant.now();
 
         Role role = new Role();
         role.setName(roleName);
-        role.setDescription("Role_SUPERADMIN : This is the role that has full access to the System (ERP");
+        role.setDescription("Role::SUPER_ADMIN : This is the role that has full access to the System (ERP");
         role.setTenant(null);
         role.setIsDefault(false);
 

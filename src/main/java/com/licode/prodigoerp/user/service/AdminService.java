@@ -46,6 +46,10 @@ public class AdminService {
             throw new NotFoundException("Admin not found with id: " + adminId);
         }
 
+        if(!optionalUser.get().getIsSuperAdmin()){
+            throw new BadRequestException("The user with id: " + adminId + " is not a superAdmin");
+        }
+
         return optionalUser.get();
     }
 

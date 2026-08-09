@@ -80,8 +80,14 @@ public class UserMapper {
 
         Collection<? extends GrantedAuthority> authorities = userPrincipal.getAuthorities();
 
-        return new AuthResponse(
-            user.getId(), user.getTenant().getSlug(), accessToken,  refreshToken, authorities
-        );
+        if(user.getTenant() != null) {
+            return new AuthResponse(
+                    user.getId(), user.getTenant().getSlug(), accessToken,  refreshToken, authorities
+            );
+        }else {
+            return new AuthResponse(user.getId(), null, accessToken,  refreshToken, authorities);
+        }
+
+
     }
 }
