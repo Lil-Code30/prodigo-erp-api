@@ -3,6 +3,36 @@ CREATE TABLE IF NOT EXISTS "tenants" (
     "name" VARCHAR(255) NOT NULL,
     "slug" VARCHAR(255) NOT NULL UNIQUE,
     "country" VARCHAR(50) NOT NULL,
+    "status" VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    "created_at" TIMESTAMP NOT NULL default current_timestamp,
+    "updated_at" TIMESTAMP NOT NULL,
+    "created_by" VARCHAR(100) NOT NULL,
+    "updated_by" VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "tenant_entitlements" (
+    "id" BIGSERIAL NOT NULL PRIMARY KEY UNIQUE,
+    "tenant_id" BIGINT NOT NULL UNIQUE,
+    "max_users" INT NOT NULL DEFAULT 5,
+    "max_storage_gb" INT NOT NULL DEFAULT 5,
+    "max_products" BIGINT NOT NULL DEFAULT 20,
+    "created_at" TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    "updated_at" TIMESTAMP NOT NULL,
+    "created_by" VARCHAR(100) NOT NULL,
+    "updated_by" VARCHAR(100) NOT NULL
+);
+
+ALTER TABLE "tenant_entitlements"
+    ADD CONSTRAINT fk_tenant_entitlements_tenants
+        FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id")
+            ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS "modules" (
+    "id" BIGSERIAL NOT NULL PRIMARY KEY ,
+    "name" VARCHAR(150) NOT NULL UNIQUE,
+    "module_key" VARCHAR(255) NOT NULL UNIQUE,
+    "price" DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    "currency" VARCHAR(3) NOT NULL DEFAULT 'XAF',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP NOT NULL default current_timestamp,
     "updated_at" TIMESTAMP NOT NULL,
@@ -10,22 +40,14 @@ CREATE TABLE IF NOT EXISTS "tenants" (
     "updated_by" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "modules" (
-   "id" BIGSERIAL NOT NULL PRIMARY KEY ,
-   "name" VARCHAR(150) NOT NULL UNIQUE,
-   "module_key" VARCHAR(255) NOT NULL UNIQUE,
-   "created_at" TIMESTAMP NOT NULL default current_timestamp,
-   "updated_at" TIMESTAMP NOT NULL,
-   "created_by" VARCHAR(100) NOT NULL,
-   "updated_by" VARCHAR(100) NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS "module_subscriptions" (
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "tenant_id" BIGINT NOT NULL,
     "module_id" BIGINT NOT NULL,
-    "is_enabled" BOOLEAN NOT NULL DEFAULT true,
-    "plan" VARCHAR(100) NOT NULL,
+    "status" VARCHAR(30) NOT NULL DEFAULT 'ACTIVE',
+    "is_free" BOOLEAN NOT NULL DEFAULT false,
+    "price" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "currency" VARCHAR(3) NOT NULL DEFAULT 'XAF',
     "activated_at" TIMESTAMP NOT NULL,
     "expires_at" TIMESTAMP NOT NULL,
     "created_at" TIMESTAMP NOT NULL default current_timestamp,
@@ -74,7 +96,7 @@ CREATE TABLE IF NOT EXISTS "roles" (
     "tenant_id" BIGINT,
     "name" VARCHAR(20) NOT NULL,
     "description" TEXT,
-    "isDefault" BOOLEAN NOT NULL DEFAULT false,
+    "is_default" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP NOT NULL default current_timestamp,
     "updated_at" TIMESTAMP NOT NULL,
     "created_by" VARCHAR(100) NOT NULL,
@@ -86,7 +108,8 @@ ALTER TABLE "roles"
         FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id")
             ON DELETE CASCADE ;
 
--- NOTE: here tenantId can be null meaning if it happens to be null, this will be consider as a role of the system itself
+-- NOTE: here tenantId can be null meaning if it happens to be null,
+-- this will be consider as a role of the system itself
 CREATE TABLE IF NOT EXISTS "user_roles" (
     "id" BIGSERIAL PRIMARY KEY NOT NULL,
     "user_id" BIGINT NOT NULL,
@@ -115,7 +138,7 @@ CREATE TABLE IF NOT EXISTS "permissions" (
     "description" TEXT,
     "action" VARCHAR(50) NOT NULL,
     "resource" VARCHAR(100) NOT NULL,
-    "module_id" BIGSERIAL NOT NULL,
+    "module_id" BIGINT NOT NULL,
     "created_at" TIMESTAMP NOT NULL default current_timestamp,
     "updated_at" TIMESTAMP NOT NULL,
     "created_by" VARCHAR(100) NOT NULL,
