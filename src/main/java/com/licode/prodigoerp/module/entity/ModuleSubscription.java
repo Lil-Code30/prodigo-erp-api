@@ -10,12 +10,13 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "module_subscription")
+@Table(name = "module_subscriptions")
 public class ModuleSubscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,15 +35,27 @@ public class ModuleSubscription {
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
 
+    @Size(max = 30)
     @NotNull
-    @ColumnDefault("true")
-    @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled;
+    @ColumnDefault("'ACTIVE'")
+    @Column(name = "status", nullable = false, length = 30)
+    private String status;
 
-    @Size(max = 100)
     @NotNull
-    @Column(name = "plan", nullable = false, length = 100)
-    private String plan;
+    @ColumnDefault("false")
+    @Column(name = "is_free", nullable = false)
+    private Boolean isFree;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Size(max = 3)
+    @NotNull
+    @ColumnDefault("'XAF'")
+    @Column(name = "currency", nullable = false, length = 3)
+    private String currency;
 
     @NotNull
     @Column(name = "activated_at", nullable = false)

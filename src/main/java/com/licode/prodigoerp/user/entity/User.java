@@ -1,6 +1,5 @@
 package com.licode.prodigoerp.user.entity;
 
-import com.licode.prodigoerp.auth.entity.RefreshToken;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,8 +11,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -32,7 +29,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "tenant_id", nullable = true)
+    @JoinColumn(name = "tenant_id")
     private Tenant tenant;
 
     @Size(max = 150)
@@ -65,21 +62,17 @@ public class User {
     @Column(name = "is_super_admin", nullable = false)
     private Boolean isSuperAdmin;
 
-
-    @Column(name = "last_login", nullable = true)
+    @NotNull
+    @Column(name = "last_login", nullable = false)
     private Instant lastLogin;
-
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RefreshToken> refreshToken = new ArrayList<>();
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-
-    @Column(name = "updated_at", nullable = true)
+    @NotNull
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     @Size(max = 100)
@@ -88,7 +81,8 @@ public class User {
     private String createdBy;
 
     @Size(max = 100)
-    @Column(name = "updated_by", nullable = true, length = 100)
+    @NotNull
+    @Column(name = "updated_by", nullable = false, length = 100)
     private String updatedBy;
 
 

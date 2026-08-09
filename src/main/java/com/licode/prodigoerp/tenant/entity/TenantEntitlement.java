@@ -1,6 +1,5 @@
-package com.licode.prodigoerp.user.entity;
+package com.licode.prodigoerp.tenant.entity;
 
-import com.licode.prodigoerp.tenant.entity.Tenant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,30 +14,33 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "tenant_entitlements")
+public class TenantEntitlement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "tenant_id")
+    @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
 
-    @Size(max = 20)
     @NotNull
-    @Column(name = "name", nullable = false, length = 20)
-    private String name;
-
-    @Column(name = "description", length = Integer.MAX_VALUE)
-    private String description;
+    @ColumnDefault("5")
+    @Column(name = "max_users", nullable = false)
+    private Integer maxUsers;
 
     @NotNull
-    @ColumnDefault("false")
-    @Column(name = "is_default", nullable = false)
-    private Boolean isDefault;
+    @ColumnDefault("5")
+    @Column(name = "max_storage_gb", nullable = false)
+    private Integer maxStorageGb;
+
+    @NotNull
+    @ColumnDefault("20")
+    @Column(name = "max_products", nullable = false)
+    private Long maxProducts;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")

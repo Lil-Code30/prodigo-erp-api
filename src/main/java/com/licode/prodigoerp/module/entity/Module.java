@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
@@ -28,6 +29,22 @@ public class Module {
     @NotNull
     @Column(name = "module_key", nullable = false)
     private String moduleKey;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Size(max = 3)
+    @NotNull
+    @ColumnDefault("'XAF'")
+    @Column(name = "currency", nullable = false, length = 3)
+    private String currency;
+
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")

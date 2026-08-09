@@ -46,7 +46,7 @@ public class UserRole {
     @Column(name = "assigned_at", nullable = false)
     private Instant assignedAt;
 
-    @Column(name = "expires_at", nullable = true)
+    @Column(name = "expires_at")
     private Instant expiresAt;
 
 

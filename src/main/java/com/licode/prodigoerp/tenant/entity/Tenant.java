@@ -34,10 +34,11 @@ public class Tenant {
     @Column(name = "country", nullable = false, length = 50)
     private String country;
 
+    @Size(max = 20)
     @NotNull
-    @ColumnDefault("true")
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    @ColumnDefault("'ACTIVE'")
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
