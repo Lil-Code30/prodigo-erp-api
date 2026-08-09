@@ -79,12 +79,11 @@ public class AuthService {
         Tenant fetchedTenant =  tenantRepository.save(newTenant);
 
         // creating user infos
-        User newUser = userMapper.toEntity(
+        User newUser = userMapper.toUserEntity(
                 registerRequest,
                 fetchedTenant,
-                now,
-                false
-                );
+                now
+        );
 
 
 

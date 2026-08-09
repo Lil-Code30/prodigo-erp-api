@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.dto;
+package com.licode.prodigoerp.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
