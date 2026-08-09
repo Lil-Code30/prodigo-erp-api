@@ -52,10 +52,11 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 150)
     private String lastName;
 
+    @Size(max = 20)
     @NotNull
-    @ColumnDefault("true")
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    @ColumnDefault("'ACTIVE'")
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
 
     @NotNull
     @ColumnDefault("false")

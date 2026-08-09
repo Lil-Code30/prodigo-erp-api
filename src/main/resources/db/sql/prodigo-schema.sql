@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "password" VARCHAR(255) NOT NULL,
     "first_name" VARCHAR(150) NOT NULL,
     "last_name" VARCHAR(150) NOT NULL,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "status" VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     "is_super_admin" BOOLEAN NOT NULL DEFAULT false,
     "last_login" TIMESTAMP NOT NULL,
     "created_at" TIMESTAMP NOT NULL default current_timestamp,
