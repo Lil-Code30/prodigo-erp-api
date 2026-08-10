@@ -98,6 +98,8 @@ public class AdminService {
         if(roleService.roleExists("SUPERADMIN")){
             Role role = roleService.getRoleByName("SUPERADMIN");
 
+            String current user
+
             roleService.assignedRoleToUser(superAdmin, role, null, SystemConstants.SYSTEM_NAME);
         }else{
             // We need to create the permission to grant all access to the system (ERP)
@@ -116,7 +118,7 @@ public class AdminService {
             roleService.assignedRoleToUser(superAdmin, superAdminRole, null, SystemConstants.SYSTEM_NAME);
 
             // now we need to assigne the permission to the role created
-            permissionService.assignPermissionToRole(permission, superAdminRole);
+            permissionService.assignPermissionToRole(permission.getCode(), superAdminRole);
         }
 
         return adminRepository.save(superAdmin);

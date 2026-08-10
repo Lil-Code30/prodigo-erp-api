@@ -30,10 +30,8 @@ public class ModuleService {
 
     public Module createModule(RegisterModule registerModule) {
 
-        JwtPrincipal user = SecurityUtils.getCurrentUser();
-
         //  Here we check if there is a superAdmin connected or else we take the system default name
-        String actor = user.username() == null ? SystemConstants.SYSTEM_NAME : user.username();
+        String actor = SecurityUtils.getCurrentUsernameOrElseSysName();
 
         Module newModule = ModuleMapper.toModuleEntity(registerModule, actor);
 
@@ -53,10 +51,19 @@ public class ModuleService {
         return fetchedModule.get();
     }
 
+    public Module findModuleByModuleKey(String moduleKey) {
+        Optional<Module> fetchedModule = moduleRepository.findModuleByModuleKey(moduleKey);
+
+        if(fetchedModule.isEmpty()){
+            throw new NotFoundException("Module Not Found with id: " + moduleKey);
+        }
+
+        return fetchedModule.get();
+    }
+
     public void createTenantModuleSubscription(Long tenantId, List<RegisterSelectedModule> registerSelectedModules) {
 
-        JwtPrincipal user = SecurityUtils.getCurrentUser();
-        String actor = user.username() == null ? SystemConstants.SYSTEM_NAME : user.username();
+        String actor = SecurityUtils.getCurrentUsernameOrElseSysName();
 
         // first need to fetch all the Selected module Object
         // (Because, here the frontend juste provide the module id, name and key, but we need the whole Module object)
@@ -94,8 +101,6 @@ public class ModuleService {
 
             moduleSubscriptionRepository.save(moduleSubscription);
         });
-
-
     }
 
 }

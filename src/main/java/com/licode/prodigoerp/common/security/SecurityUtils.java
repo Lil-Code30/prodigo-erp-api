@@ -1,5 +1,6 @@
 package com.licode.prodigoerp.common.security;
 
+import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.JwtValidationException;
 import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,5 +18,14 @@ public class SecurityUtils {
         }
 
         throw new JwtValidationException("Invalid token");
+    }
+
+    // return the current user connected of else return the system name
+    // this is useful to set the audit value (who did what in the system)
+    public static String getCurrentUsernameOrElseSysName(){
+
+        JwtPrincipal principal = getCurrentUser();
+
+        return principal.username() == null ? SystemConstants.SYSTEM_NAME : principal.username();
     }
 }
