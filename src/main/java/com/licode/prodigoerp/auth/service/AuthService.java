@@ -11,8 +11,10 @@ import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.common.security.CustomUserDetailsService;
 import com.licode.prodigoerp.common.security.JwtUtil;
 import com.licode.prodigoerp.tenant.entity.Tenant;
+import com.licode.prodigoerp.tenant.entity.TenantEntitlement;
 import com.licode.prodigoerp.tenant.mapper.TenantMapper;
 import com.licode.prodigoerp.tenant.repository.TenantRepository;
+import com.licode.prodigoerp.tenant.service.TenantEntitlementService;
 import com.licode.prodigoerp.user.entity.Role;
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.entity.UserPrincipal;
@@ -38,6 +40,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
+    private final TenantEntitlementService tenantEntitlementService;
     private final RoleService roleService;
     private final UserService userService;
     private final UserMapper userMapper;
@@ -78,13 +81,20 @@ public class AuthService {
 
         Tenant fetchedTenant =  tenantRepository.save(newTenant);
 
+        // After creating the tenant, we need to create its tenant entitlements
+        // with the system default values found in "package com.licode.prodigoerp.common - SystemConstants"
+        tenantEntitlementService.createDefault(newTenant);
+
+        // Then we need to create the moduleSub from the selected module provided
+        // NOTE: the first module in the list of the selected module is free
+        // TODO: handle the module subscription when done with the module management
+
         // creating user infos
         User newUser = userMapper.toUserEntity(
                 registerRequest,
                 fetchedTenant,
                 now
         );
-
 
 
         // NOTE: if I don't save the user first before generating a refreshToken, there will be an error
