@@ -4,8 +4,10 @@ import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.user.entity.Role;
+import com.licode.prodigoerp.user.entity.RolePermission;
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.entity.UserRole;
+import com.licode.prodigoerp.user.repository.RolePermissionRepository;
 import com.licode.prodigoerp.user.repository.RoleRepository;
 import com.licode.prodigoerp.user.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final RolePermissionRepository rolePermissionRepository;
     private final UserRoleRepository userRoleRepository;
 
     @Transactional
@@ -88,5 +91,25 @@ public class RoleService {
        }
 
        return role.get();
+    }
+
+    public Role getRoleByRoleNameAndTenantId(String roleName, Long tenantId) {
+        Optional<Role> role = roleRepository.findByNameAndTenant_Id(roleName, tenantId);
+
+        if(role.isEmpty()) {
+            throw new NotFoundException("Role provided " + roleName +" is not found in the Tenant " + tenantId);
+        }
+
+        return role.get();
+    }
+
+    @Transactional
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    @Transactional
+    public void saveRolePermission(RolePermission rolePermission) {
+        rolePermissionRepository.save(rolePermission);
     }
 }

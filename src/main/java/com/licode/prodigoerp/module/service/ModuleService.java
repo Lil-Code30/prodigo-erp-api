@@ -15,6 +15,7 @@ import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ModuleService {
     private final ModuleSubscriptionRepository moduleSubscriptionRepository;
     private final TenantService  tenantService;
 
+    @Transactional
     public Module createModule(RegisterModule registerModule) {
 
         //  Here we check if there is a superAdmin connected or else we take the system default name
@@ -61,6 +63,7 @@ public class ModuleService {
         return fetchedModule.get();
     }
 
+    @Transactional
     public void createTenantModuleSubscription(Long tenantId, List<RegisterSelectedModule> registerSelectedModules) {
 
         String actor = SecurityUtils.getCurrentUsernameOrElseSysName();

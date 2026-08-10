@@ -5,6 +5,7 @@ import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.BadRequestException;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
+import com.licode.prodigoerp.common.security.SecurityUtils;
 import com.licode.prodigoerp.user.dto.CreatePermission;
 import com.licode.prodigoerp.user.dto.RegisterAdminRequest;
 import com.licode.prodigoerp.user.entity.Permission;
@@ -98,9 +99,9 @@ public class AdminService {
         if(roleService.roleExists("SUPERADMIN")){
             Role role = roleService.getRoleByName("SUPERADMIN");
 
-            String current user
+            String currentUser = SecurityUtils.getCurrentUsernameOrElseSysName();
 
-            roleService.assignedRoleToUser(superAdmin, role, null, SystemConstants.SYSTEM_NAME);
+            roleService.assignedRoleToUser(superAdmin, role, null, currentUser);
         }else{
             // We need to create the permission to grant all access to the system (ERP)
             CreatePermission permissionDto = new CreatePermission(
@@ -115,7 +116,9 @@ public class AdminService {
 
             Role superAdminRole = roleService.createSuperAdminRole();
 
-            roleService.assignedRoleToUser(superAdmin, superAdminRole, null, SystemConstants.SYSTEM_NAME);
+            String currentUser = SecurityUtils.getCurrentUsernameOrElseSysName();
+
+            roleService.assignedRoleToUser(superAdmin, superAdminRole, null, currentUser);
 
             // now we need to assigne the permission to the role created
             permissionService.assignPermissionToRole(permission.getCode(), superAdminRole);
