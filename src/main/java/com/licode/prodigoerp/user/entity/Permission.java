@@ -27,7 +27,8 @@ public class Permission {
     @Column(name = "code", nullable = false, length = 50)
     private String code;
 
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @Size(max = 500)
+    @Column(name = "description", length = 500)
     private String description;
 
     @Size(max = 50)

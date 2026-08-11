@@ -6,6 +6,7 @@ import com.licode.prodigoerp.common.exception.BadRequestException;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.common.security.SecurityUtils;
+import com.licode.prodigoerp.user.dto.AssignPermissionDto;
 import com.licode.prodigoerp.user.dto.CreatePermission;
 import com.licode.prodigoerp.user.dto.RegisterAdminRequest;
 import com.licode.prodigoerp.user.entity.Permission;
@@ -13,13 +14,11 @@ import com.licode.prodigoerp.user.entity.Role;
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.mapper.UserMapper;
 import com.licode.prodigoerp.user.repository.AdminRepository;
-import com.licode.prodigoerp.user.repository.RoleRepository;
 import com.licode.prodigoerp.user.repository.UserRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.Instant;
 import java.util.List;
@@ -107,12 +106,11 @@ public class AdminService {
             CreatePermission permissionDto = new CreatePermission(
                     "Complete (FULL) Access to the ERP System",
                     "CRUD",
-                    "ERP",
-                    null
+                    "ERP"
 
             );
 
-            Permission permission = permissionService.createPermission(permissionDto);
+            Permission permission = permissionService.createPermission(permissionDto, null);
 
             Role superAdminRole = roleService.createSuperAdminRole();
 
@@ -120,8 +118,14 @@ public class AdminService {
 
             roleService.assignedRoleToUser(superAdmin, superAdminRole, null, currentUser);
 
+            AssignPermissionDto assignPermissionDto = new AssignPermissionDto(
+                    permission.getCode(),
+                    superAdminRole.getName(),
+                    superAdminRole.getTenant().getId()
+            );
+
             // now we need to assigne the permission to the role created
-            permissionService.assignPermissionToRole(permission.getCode(), superAdminRole);
+            permissionService.assignPermissionToRole(assignPermissionDto);
         }
 
         return adminRepository.save(superAdmin);

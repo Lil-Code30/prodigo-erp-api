@@ -1,8 +1,7 @@
 package com.licode.prodigoerp.module.service;
 
-import com.licode.prodigoerp.common.SystemConstants;
+import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.security.SecurityUtils;
-import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
 import com.licode.prodigoerp.module.dto.RegisterSelectedModule;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.module.dto.RegisterModule;
@@ -13,6 +12,7 @@ import com.licode.prodigoerp.module.repository.ModuleRepository;
 import com.licode.prodigoerp.module.repository.ModuleSubscriptionRepository;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.service.TenantService;
+import com.licode.prodigoerp.user.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,18 +28,30 @@ public class ModuleService {
     private final ModuleRepository moduleRepository;
     private final ModuleSubscriptionRepository moduleSubscriptionRepository;
     private final TenantService  tenantService;
+    private final PermissionService permissionService;
 
     @Transactional
     public Module createModule(RegisterModule registerModule) {
+
+        // check if there is already a Module with the moduleKey provided
+        if(moduleRepository.findModuleByModuleKey(registerModule.moduleKey()).isPresent()) {
+            throw new ConflictException("Module with this key: " + registerModule.moduleKey() + " already exists");
+        }
 
         //  Here we check if there is a superAdmin connected or else we take the system default name
         String actor = SecurityUtils.getCurrentUsernameOrElseSysName();
 
         Module newModule = ModuleMapper.toModuleEntity(registerModule, actor);
 
-        // TODO: We need to generate the permissions for the module creted
+        Module createdModule = moduleRepository.save(newModule);
 
-        return moduleRepository.save(newModule);
+        // We need to generate all permissions for the module created
+        registerModule.createPermissions()
+                .forEach( permission -> {
+                    permissionService.createPermission(permission, createdModule.getModuleKey());
+                });
+
+        return createdModule;
     }
 
     public Module findModuleById(Long id) {

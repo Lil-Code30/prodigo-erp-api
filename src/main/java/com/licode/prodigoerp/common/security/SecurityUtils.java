@@ -26,6 +26,6 @@ public class SecurityUtils {
 
         JwtPrincipal principal = getCurrentUser();
 
-        return principal.username() == null ? SystemConstants.SYSTEM_NAME : principal.username();
+        return principal.userId() == null ? SystemConstants.SYSTEM_NAME : principal.username();
     }
 }
