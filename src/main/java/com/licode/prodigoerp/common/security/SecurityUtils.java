@@ -3,29 +3,41 @@ package com.licode.prodigoerp.common.security;
 import com.licode.prodigoerp.common.SystemConstants;
 import com.licode.prodigoerp.common.exception.JwtValidationException;
 import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Objects;
+import java.util.Optional;
 
 public class SecurityUtils {
 
-    public static JwtPrincipal getCurrentUser(){
+    // Never throws — returns empty if unauthenticated, anonymous, or on a public endpoint
+    public static Optional<JwtPrincipal> getCurrentUserOptional() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Object principal = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
-
-        if(principal instanceof JwtPrincipal){
-            return (JwtPrincipal) principal;
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return Optional.empty();
         }
 
-        throw new JwtValidationException("Invalid token");
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof JwtPrincipal jwtPrincipal) {
+            return Optional.of(jwtPrincipal);
+        }
+
+        // covers "anonymousUser" String principal from AnonymousAuthenticationToken
+        return Optional.empty();
     }
 
-    // return the current user connected of else return the system name
-    // this is useful to set the audit value (who did what in the system)
-    public static String getCurrentUsernameOrElseSysName(){
+    // Use on protected endpoints where a user is guaranteed — fails loudly if missing
+    public static JwtPrincipal getCurrentUser() {
+        return getCurrentUserOptional()
+                .orElseThrow(() -> new JwtValidationException("Invalid token"));
+    }
 
-        JwtPrincipal principal = getCurrentUser();
-
-        return principal.userId() == null ? SystemConstants.SYSTEM_NAME : principal.username();
+    // Use for audit fields (createdBy/updatedBy) — safe on public endpoints too
+    public static String getCurrentUsernameOrElseSysName() {
+        return getCurrentUserOptional()
+                .map(JwtPrincipal::username)
+                .orElse(SystemConstants.SYSTEM_NAME);
     }
 }
