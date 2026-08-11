@@ -10,6 +10,7 @@ import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.common.security.CustomUserDetailsService;
 import com.licode.prodigoerp.common.security.JwtUtil;
+import com.licode.prodigoerp.module.service.ModuleService;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.entity.TenantEntitlement;
 import com.licode.prodigoerp.tenant.mapper.TenantMapper;
@@ -42,6 +43,7 @@ public class AuthService {
     private final TenantRepository tenantRepository;
     private final TenantEntitlementService tenantEntitlementService;
     private final RoleService roleService;
+    private final ModuleService moduleService;
     private final UserService userService;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
@@ -87,7 +89,9 @@ public class AuthService {
 
         // Then we need to create the moduleSub from the selected module provided
         // NOTE: the first module in the list of the selected module is free
-        // TODO: handle the module subscription when done with the module management
+        // TODO: handle the module subscription
+
+        moduleService.createTenantModuleSubscription(fetchedTenant.getId(), registerRequest.selectedModules());
 
         // creating user infos
         User newUser = userMapper.toUserEntity(

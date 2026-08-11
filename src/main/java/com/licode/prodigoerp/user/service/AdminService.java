@@ -98,7 +98,7 @@ public class AdminService {
         if(roleService.roleExists("SUPERADMIN")){
             Role role = roleService.getRoleByName("SUPERADMIN");
 
-            String currentUser = SecurityUtils.getCurrentUsernameOrElseSysName();
+            String currentUser = SecurityUtils.getCurrentUser().username();
 
             roleService.assignedRoleToUser(superAdmin, role, null, currentUser);
         }else{
