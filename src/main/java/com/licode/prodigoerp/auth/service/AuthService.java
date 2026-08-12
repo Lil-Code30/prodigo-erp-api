@@ -10,6 +10,9 @@ import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.common.security.CustomUserDetailsService;
 import com.licode.prodigoerp.common.security.JwtUtil;
+import com.licode.prodigoerp.module.dto.RegisterSelectedModule;
+import com.licode.prodigoerp.module.entity.Module;
+import com.licode.prodigoerp.module.repository.ModuleRepository;
 import com.licode.prodigoerp.module.service.ModuleService;
 import com.licode.prodigoerp.tenant.entity.Tenant;
 import com.licode.prodigoerp.tenant.entity.TenantEntitlement;
@@ -33,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +44,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final ModuleRepository moduleRepository;
     private final TenantRepository tenantRepository;
     private final TenantEntitlementService tenantEntitlementService;
     private final RoleService roleService;
@@ -186,5 +191,21 @@ public class AuthService {
 
         return new RefreshResponse(accessToken, newRefreshToken.getToken());
 
+    }
+
+    // This is meant to convert each Modules in the format RegisterSelectedModule(ModuleId, ModuleName, moduleKey)
+    public List<RegisterSelectedModule> getAllSelectedModule(){
+        List<Module> allModules = moduleRepository.findAll();
+
+        // convert Module Entity to SelectedModule
+        return allModules.stream().map(
+                m -> {
+                    return  new RegisterSelectedModule(
+                            m.getId(),
+                            m.getName(),
+                            m.getModuleKey()
+                    );
+                }
+        ).toList();
     }
 }

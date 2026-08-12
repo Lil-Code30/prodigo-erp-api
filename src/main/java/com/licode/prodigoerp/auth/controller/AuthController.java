@@ -6,6 +6,7 @@ import com.licode.prodigoerp.auth.dto.RefreshResponse;
 import com.licode.prodigoerp.auth.dto.RegisterRequest;
 import com.licode.prodigoerp.auth.service.AuthService;
 import com.licode.prodigoerp.auth.service.RefreshTokenService;
+import com.licode.prodigoerp.module.dto.RegisterSelectedModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/{version}/auth")
@@ -93,5 +95,13 @@ public class AuthController {
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).build();
 
+    }
+
+    // This endpoint is to let the frontend fetch for all the modules in the system
+    // This is done to let the user registering to select the Modules he/she wants to add on his/her account
+    @GetMapping(value = "/modules", version = "1.0")
+    public ResponseEntity<List<RegisterSelectedModule>> getAllModules(){
+
+        return ResponseEntity.ok().body(authService.getAllSelectedModule());
     }
 }
