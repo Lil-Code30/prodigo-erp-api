@@ -15,7 +15,7 @@ public class ModuleMapper {
 
         Module module = new Module();
         module.setName(registerModule.name());
-        module.setModuleKey(registerModule.moduleKey());
+        module.setModuleKey(registerModule.moduleKey().toUpperCase());
         module.setPrice(registerModule.price());
         module.setCurrency(SystemConstants.SYSTEM_CURRENCY);
         module.setIsActive(true);

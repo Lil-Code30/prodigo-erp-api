@@ -1,6 +1,7 @@
 package com.licode.prodigoerp.module.service;
 
 import com.licode.prodigoerp.common.exception.ConflictException;
+import com.licode.prodigoerp.common.exception.JwtValidationException;
 import com.licode.prodigoerp.common.security.SecurityUtils;
 import com.licode.prodigoerp.module.dto.RegisterSelectedModule;
 import com.licode.prodigoerp.common.exception.NotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ public class ModuleService {
     public Module createModule(RegisterModule registerModule) {
 
         // check if there is already a Module with the moduleKey provided
-        if(moduleRepository.findModuleByModuleKey(registerModule.moduleKey()).isPresent()) {
+        if(moduleRepository.findModuleByModuleKey(registerModule.moduleKey().toUpperCase()).isPresent()) {
             throw new ConflictException("Module with this key: " + registerModule.moduleKey() + " already exists");
         }
 
@@ -54,6 +56,10 @@ public class ModuleService {
         return createdModule;
     }
 
+    public List<Module> findAllModules() {
+        return moduleRepository.findAll();
+    }
+
     public Module findModuleById(Long id) {
 
         Optional<Module> fetchedModule = moduleRepository.findById(id);
@@ -66,13 +72,40 @@ public class ModuleService {
     }
 
     public Module findModuleByModuleKey(String moduleKey) {
-        Optional<Module> fetchedModule = moduleRepository.findModuleByModuleKey(moduleKey);
+        Optional<Module> fetchedModule = moduleRepository.findModuleByModuleKey(moduleKey.toUpperCase());
 
         if(fetchedModule.isEmpty()){
             throw new NotFoundException("Module Not Found with id: " + moduleKey);
         }
 
         return fetchedModule.get();
+    }
+
+    @Transactional
+    public void changeModuleStatus(String moduleKey) {
+        Optional<Module> fetchedModule = moduleRepository.findModuleByModuleKey(moduleKey.toUpperCase());
+
+        if(fetchedModule.isEmpty()){
+            throw new NotFoundException("Module Not Found with id: " + moduleKey);
+        }
+
+        Module newStatusModule = fetchedModule.get();
+
+        // if newStatusModule.getIsActive() == true  then set the status to false else set it to true :
+        Boolean newStatus = !newStatusModule.getIsActive();
+        newStatusModule.setIsActive(newStatus);
+        newStatusModule.setUpdatedAt(Instant.now());
+        String actor = "";
+
+        try{
+            actor = SecurityUtils.getCurrentUser().username();
+        }catch(Exception e){
+            throw new JwtValidationException("Invalid username");
+        }
+
+        newStatusModule.setUpdatedBy(actor);
+
+        moduleRepository.save(newStatusModule);
     }
 
     @Transactional
