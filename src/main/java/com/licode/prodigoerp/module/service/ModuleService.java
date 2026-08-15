@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -109,9 +111,12 @@ public class ModuleService {
     }
 
     @Transactional
-    public void createTenantModuleSubscription(Long tenantId, List<RegisterSelectedModule> registerSelectedModules) {
+    public Map<String, Module> createTenantModuleSubscription(Long tenantId, List<RegisterSelectedModule> registerSelectedModules) {
 
         String actor = SecurityUtils.getCurrentUsernameOrElseSysName();
+
+        // to keep track of all the modules subscribe by the tenant
+        Map<String, Module> allModuleSubscriptions = new HashMap<>();
 
         // first need to fetch all the Selected module Object
         // (Because, here the frontend juste provide the module id, name and key, but we need the whole Module object)
@@ -147,8 +152,12 @@ public class ModuleService {
                     price
             );
 
+            allModuleSubscriptions.put(selectedModule.getModuleKey(), selectedModule);
+
             moduleSubscriptionRepository.save(moduleSubscription);
         });
+
+        return allModuleSubscriptions;
     }
 
 }

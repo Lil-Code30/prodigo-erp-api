@@ -15,15 +15,17 @@ import com.licode.prodigoerp.module.entity.Module;
 import com.licode.prodigoerp.module.repository.ModuleRepository;
 import com.licode.prodigoerp.module.service.ModuleService;
 import com.licode.prodigoerp.tenant.entity.Tenant;
-import com.licode.prodigoerp.tenant.entity.TenantEntitlement;
 import com.licode.prodigoerp.tenant.mapper.TenantMapper;
 import com.licode.prodigoerp.tenant.repository.TenantRepository;
 import com.licode.prodigoerp.tenant.service.TenantEntitlementService;
+import com.licode.prodigoerp.user.dto.CreatePermission;
+import com.licode.prodigoerp.user.entity.Permission;
 import com.licode.prodigoerp.user.entity.Role;
 import com.licode.prodigoerp.user.entity.User;
 import com.licode.prodigoerp.user.entity.UserPrincipal;
 import com.licode.prodigoerp.user.mapper.UserMapper;
 import com.licode.prodigoerp.user.repository.UserRepository;
+import com.licode.prodigoerp.user.service.PermissionService;
 import com.licode.prodigoerp.user.service.RoleService;
 import com.licode.prodigoerp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,6 +51,7 @@ public class AuthService {
     private final TenantRepository tenantRepository;
     private final TenantEntitlementService tenantEntitlementService;
     private final RoleService roleService;
+    private final PermissionService permissionService;
     private final ModuleService moduleService;
     private final UserService userService;
     private final UserMapper userMapper;
@@ -94,9 +98,8 @@ public class AuthService {
 
         // Then we need to create the moduleSub from the selected module provided
         // NOTE: the first module in the list of the selected module is free
-        // TODO: handle the module subscription
-
-        moduleService.createTenantModuleSubscription(fetchedTenant.getId(), registerRequest.selectedModules());
+        // handle the module subscription
+        Map<String, Module> subscriptions =  moduleService.createTenantModuleSubscription(fetchedTenant.getId(), registerRequest.selectedModules());
 
         // creating user infos
         User newUser = userMapper.toUserEntity(
@@ -125,6 +128,24 @@ public class AuthService {
                 SystemConstants.SYSTEM_NAME
         );
 
+        // we need to create permission/module for the role created :
+        //NOTE: since this will be the endpoint for the Tenant Admin creation,
+        // he/she will have all the permissions i.e. module_CRUD (e.x: CRM_CRUD or INVOICE_CRUD)
+        // This is taking the module key as the resource + the action which is the CRUD (check the permission services for more infos)
+        subscriptions.forEach( (key, value) -> {
+
+            CreatePermission permissionDto = new CreatePermission(
+                    "Complete (FULL) Access to the " + value.getName() + " Module",
+                    "CRUD",
+                    key
+            );
+
+            Permission newPermission = permissionService.createPermission(permissionDto, key);
+
+            // NOTE: After creating the permission we directly assigne the permission to the role
+            permissionService.assignPermissionToRole(newPermission, adminRole);
+        });
+
 
         return userMapper.toAuthResponse(fetchedUser, refreshToken.getToken());
     }
@@ -147,6 +168,8 @@ public class AuthService {
        // TODO : Need to figure out how to manage the refresh token system
         // don't want a new refresh token for every login
        RefreshToken refreshToken = refreshTokenService.issueFor(user.get());
+
+       String identify = user.get().getIsSuperAdmin() ? "SUPERADMIN" : "USER";
 
 
         return userMapper.toAuthResponse(user.get(),  refreshToken.getToken());

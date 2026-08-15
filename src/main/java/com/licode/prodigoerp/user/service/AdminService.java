@@ -118,14 +118,9 @@ public class AdminService {
 
             roleService.assignedRoleToUser(superAdmin, superAdminRole, null, currentUser);
 
-            AssignPermissionDto assignPermissionDto = new AssignPermissionDto(
-                    permission.getCode(),
-                    superAdminRole.getName(),
-                    superAdminRole.getTenant().getId()
-            );
 
             // now we need to assigne the permission to the role created
-            permissionService.assignPermissionToRole(assignPermissionDto);
+            permissionService.assignPermissionToRole(permission, superAdminRole);
         }
 
         return adminRepository.save(superAdmin);
