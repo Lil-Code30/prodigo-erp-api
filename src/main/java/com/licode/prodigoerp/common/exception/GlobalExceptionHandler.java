@@ -1,8 +1,12 @@
 package com.licode.prodigoerp.common.exception;
 
-import com.licode.prodigoerp.common.exception.dto.ApiErrorResponse;
-import com.licode.prodigoerp.common.exception.dto.FieldErrorResponse;
-import com.licode.prodigoerp.common.exception.dto.ValidationErrorResponse;
+import com.licode.prodigoerp.auth.domain.exception.BadRequestException;
+import com.licode.prodigoerp.auth.domain.exception.ConflictException;
+import com.licode.prodigoerp.auth.domain.exception.JwtValidationException;
+import com.licode.prodigoerp.auth.domain.exception.NotFoundException;
+import com.licode.prodigoerp.auth.domain.exception.dto.ApiErrorResponse;
+import com.licode.prodigoerp.auth.domain.exception.dto.FieldErrorResponse;
+import com.licode.prodigoerp.auth.domain.exception.dto.ValidationErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
