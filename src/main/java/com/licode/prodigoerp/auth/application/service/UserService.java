@@ -6,6 +6,7 @@ import com.licode.prodigoerp.auth.domain.command.AuthResponseCommand;
 import com.licode.prodigoerp.auth.domain.command.RegisterUserCommand;
 import com.licode.prodigoerp.auth.domain.exception.ConflictException;
 import com.licode.prodigoerp.tenant.application.port.input.CreateTenantUseCase;
+import com.licode.prodigoerp.tenant.application.port.input.TenantEntitlementUseCase;
 import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
 import com.licode.prodigoerp.tenant.domain.command.CreateTenantCommand;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
@@ -19,6 +20,7 @@ public class UserService implements RegisterUserUseCase {
     private final UserQueryRepositoryPort userQueryRepositoryPort;
     private final TenantLookUpUseCase tenantLookUpUseCase;
     private final CreateTenantUseCase createTenantUseCase;
+    private final TenantEntitlementUseCase  tenantEntitlementUseCase;
 
 
     @Override
@@ -48,6 +50,13 @@ public class UserService implements RegisterUserUseCase {
                         registerUserCommand.country()
                 )
         );
+
+        // After creating the tenant, we need to create its tenant entitlements (with the default values)
+        tenantEntitlementUseCase.createDefaultTenantEntitlement(createdTenant);
+
+        // Then we need to create the moduleSub from the selected module provided
+        // NOTE: the first module in the list of the selected module is free
+        // handle the module subscription
 
 
         return null;

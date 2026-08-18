@@ -31,7 +31,7 @@ public class UserJpaMapper {
         return new User();
     }
 
-    public static User toUserModel(UserJpaEntity userJpaEntity) {
+    public static User toDomainModel(UserJpaEntity userJpaEntity) {
         User user = new User();
         user.setId(userJpaEntity.getId());
         user.setUsername(userJpaEntity.getUsername());
@@ -39,7 +39,7 @@ public class UserJpaMapper {
         user.setEmail(userJpaEntity.getEmail());
         user.setFirstName(userJpaEntity.getFirstName());
         user.setLastName(userJpaEntity.getLastName());
-        user.setTenant(TenantJpaMapper.toTenantModel(userJpaEntity.getTenant()));
+        user.setTenant(TenantJpaMapper.toDomainModel(userJpaEntity.getTenant()));
         user.setStatus(userJpaEntity.getStatus());
         user.setIsSuperAdmin(userJpaEntity.getIsSuperAdmin());
         user.setLastLogin(userJpaEntity.getLastLogin());

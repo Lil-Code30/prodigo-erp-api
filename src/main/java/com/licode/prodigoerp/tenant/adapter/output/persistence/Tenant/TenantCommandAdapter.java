@@ -25,6 +25,6 @@ public class TenantCommandAdapter implements TenantCommandRepositoryPort {
 
         TenantJpaEntity createdTenantJpa =  jpaTenantRepository.save(TenantJpaMapper.toDbCreateTenant(registerTenantDto));
 
-        return TenantJpaMapper.toTenantModel(createdTenantJpa);
+        return TenantJpaMapper.toDomainModel(createdTenantJpa);
     }
 }

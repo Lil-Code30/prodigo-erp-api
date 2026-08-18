@@ -42,7 +42,7 @@ public class TenantJpaMapper {
         return tenantJpaEntity;
     }
 
-    public static Tenant toTenantModel(TenantJpaEntity tenantJpaEntity) {
+    public static Tenant toDomainModel(TenantJpaEntity tenantJpaEntity) {
         Tenant tenant = new Tenant();
 
         tenant.setId(tenantJpaEntity.getId());
