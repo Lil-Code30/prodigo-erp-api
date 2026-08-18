@@ -1,7 +1,7 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant;
 
 
-import com.licode.prodigoerp.tenant.adapter.input.rest.dto.RegisterTenant;
+import com.licode.prodigoerp.tenant.adapter.input.rest.dto.RegisterTenantDto;
 import com.licode.prodigoerp.tenant.application.port.output.TenantCommandRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,8 @@ public class TenantCommandAdapter implements TenantCommandRepositoryPort {
 
 
     @Override
-    public TenantJpaEntity createNewTenant(TenantJpaEntity tenantJpaEntity) {
-        return null;
+    public TenantJpaEntity createNewTenant(RegisterTenantDto registerTenantDto) {
+
+        return jpaTenantRepository.save(TenantJpaMapper.toDbCreateTenant(registerTenantDto));
     }
 }

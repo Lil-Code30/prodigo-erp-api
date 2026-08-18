@@ -25,12 +25,12 @@ public class UserPersistenceAdapter implements UserCommandRepositoryPort, UserQu
     @Override
     public Optional<User> findUserByEmail(String email) {
 
-        return jpaUserRepository.findByEmail(email).map(UserMapper::toUserModel);
+        return jpaUserRepository.findByEmail(email).map(UserJpaMapper::toUserModel);
     }
 
     @Override
     public Optional<User> findUserByUsername(String username) {
 
-        return jpaUserRepository.findByUsername(username).map(UserMapper::toUserModel);
+        return jpaUserRepository.findByUsername(username).map(UserJpaMapper::toUserModel);
     }
 }

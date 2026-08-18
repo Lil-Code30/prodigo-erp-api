@@ -1,9 +1,9 @@
 package com.licode.prodigoerp.auth.adapter.output.persistence.user;
 
 import com.licode.prodigoerp.auth.domain.model.User;
-import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantMapper;
+import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantJpaMapper;
 
-public class UserMapper {
+public class UserJpaMapper {
 
     public static UserJpaEntity toJpaEntity(User user) {
         UserJpaEntity userJpaEntity = new UserJpaEntity();
@@ -14,7 +14,7 @@ public class UserMapper {
         userJpaEntity.setEmail(user.getEmail());
         userJpaEntity.setFirstName(user.getFirstName());
         userJpaEntity.setLastName(user.getLastName());
-        userJpaEntity.setTenant(TenantMapper.toJpaEntity(user.getTenant()));
+        userJpaEntity.setTenant(TenantJpaMapper.toJpaEntity(user.getTenant()));
         userJpaEntity.setStatus(user.getStatus());
         userJpaEntity.setIsSuperAdmin(user.getIsSuperAdmin());
         userJpaEntity.setLastLogin(user.getLastLogin());
@@ -39,7 +39,7 @@ public class UserMapper {
         user.setEmail(userJpaEntity.getEmail());
         user.setFirstName(userJpaEntity.getFirstName());
         user.setLastName(userJpaEntity.getLastName());
-        user.setTenant(userJpaEntity.getJ);
+        user.setTenant(TenantJpaMapper.toTenantModel(userJpaEntity.getTenant()));
         user.setStatus(userJpaEntity.getStatus());
         user.setIsSuperAdmin(userJpaEntity.getIsSuperAdmin());
         user.setLastLogin(userJpaEntity.getLastLogin());

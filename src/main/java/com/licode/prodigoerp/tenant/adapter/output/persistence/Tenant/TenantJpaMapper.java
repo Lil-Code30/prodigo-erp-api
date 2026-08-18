@@ -1,21 +1,21 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant;
 
-import com.licode.prodigoerp.tenant.adapter.input.rest.dto.RegisterTenant;
+import com.licode.prodigoerp.tenant.adapter.input.rest.dto.RegisterTenantDto;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 
 import java.time.Instant;
 
-public class TenantMapper {
+public class TenantJpaMapper {
 
-    public static TenantJpaEntity toDbCreateTenant(RegisterTenant registerTenant) {
+    public static TenantJpaEntity toDbCreateTenant(RegisterTenantDto registerTenantDto) {
         TenantJpaEntity tenantJpaEntity = new TenantJpaEntity();
 
         Instant instant = Instant.now();
 
         tenantJpaEntity.setId(null);
-        tenantJpaEntity.setSlug(registerTenant.companySlug());
-        tenantJpaEntity.setName(registerTenant.companyName());
-        tenantJpaEntity.setCountry(registerTenant.country());
+        tenantJpaEntity.setSlug(registerTenantDto.companySlug());
+        tenantJpaEntity.setName(registerTenantDto.companyName());
+        tenantJpaEntity.setCountry(registerTenantDto.country());
         tenantJpaEntity.setStatus("ACTIVE");
         tenantJpaEntity.setCreatedAt(instant);
         tenantJpaEntity.setUpdatedAt(instant);
@@ -42,7 +42,7 @@ public class TenantMapper {
         return tenantJpaEntity;
     }
 
-    public static Tenant toJpaEntity(TenantJpaEntity tenantJpaEntity) {
+    public static Tenant toTenantModel(TenantJpaEntity tenantJpaEntity) {
         Tenant tenant = new Tenant();
 
         tenant.setId(tenantJpaEntity.getId());
