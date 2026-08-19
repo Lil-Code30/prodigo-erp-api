@@ -52,7 +52,7 @@ public class ModuleService implements TenantModuleSubCreateUseCase {
 
         // with the Tenant info and the fetched modules, we can now create a ModuleSubscription
         // for every module in the selectedModulesObj
-        // TODO : 
+        // TODO :
 
         return Map.of();
     }
