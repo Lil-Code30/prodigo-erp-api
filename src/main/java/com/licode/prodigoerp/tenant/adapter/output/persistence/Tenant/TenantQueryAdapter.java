@@ -1,6 +1,7 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant;
 
 import com.licode.prodigoerp.tenant.application.port.output.TenantQueryRepositoryPort;
+import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +14,17 @@ public class TenantQueryAdapter implements TenantQueryRepositoryPort {
     private final JpaTenantRepository jpaTenantRepository;
 
     @Override
-    public Optional<TenantJpaEntity> findTenantById(Long id) {
-        return jpaTenantRepository.findById(id);
+    public Optional<Tenant> findTenantById(Long id) {
+        Optional<TenantJpaEntity> tenantJpaEntity = jpaTenantRepository.findById(id);
+
+       return tenantJpaEntity.map(TenantJpaMapper::toDomainModel);
     }
 
     @Override
-    public Optional<TenantJpaEntity> findTenantBySlug(String slug) {
-        return jpaTenantRepository.findBySlug(slug);
+    public Optional<Tenant> findTenantBySlug(String slug) {
+        Optional<TenantJpaEntity> tenantJpaEntity = jpaTenantRepository.findBySlug(slug);
+
+        return tenantJpaEntity.map(TenantJpaMapper::toDomainModel);
     }
 
     @Override
