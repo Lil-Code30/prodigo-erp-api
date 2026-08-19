@@ -1,14 +1,11 @@
-package com.licode.prodigoerp.module.entity;
+package com.licode.prodigoerp.module.adapter.output.persistence.module;
 
-import com.licode.prodigoerp.tenant.entity.Tenant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,35 +13,22 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "module_subscriptions")
-public class ModuleSubscription {
+@Table(name = "modules")
+public class ModuleJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 150)
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
+    @Column(name = "name", nullable = false, length = 150)
+    private String name;
 
+    @Size(max = 255)
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "module_id", nullable = false)
-    private Module module;
-
-    @Size(max = 30)
-    @NotNull
-    @ColumnDefault("'ACTIVE'")
-    @Column(name = "status", nullable = false, length = 30)
-    private String status;
-
-    @NotNull
-    @ColumnDefault("false")
-    @Column(name = "is_free", nullable = false)
-    private Boolean isFree;
+    @Column(name = "module_key", nullable = false)
+    private String moduleKey;
 
     @NotNull
     @ColumnDefault("0")
@@ -58,12 +42,9 @@ public class ModuleSubscription {
     private String currency;
 
     @NotNull
-    @Column(name = "activated_at", nullable = false)
-    private Instant activatedAt;
-
-    @NotNull
-    @Column(name = "expires_at", nullable = false)
-    private Instant expiresAt;
+    @ColumnDefault("true")
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")

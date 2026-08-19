@@ -1,6 +1,10 @@
 package com.licode.prodigoerp.auth.domain.command;
 
 
+import com.licode.prodigoerp.module.domain.command.SelectedModuleCommand;
+
+import java.util.List;
+
 public record RegisterUserCommand(String companyName,
                                   String companySlug,
                                   String country,
@@ -9,5 +13,5 @@ public record RegisterUserCommand(String companyName,
                                   String password,
                                   String firstName,
                                   String lastName,
-                                  SelectedModuleCommand selectedModule) {
+                                  List<SelectedModuleCommand> selectedModules) {
 }

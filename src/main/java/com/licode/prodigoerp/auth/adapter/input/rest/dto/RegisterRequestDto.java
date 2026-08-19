@@ -1,7 +1,5 @@
 package com.licode.prodigoerp.auth.adapter.input.rest.dto;
 
-import jakarta.validation.constraints.NotNull;
-
 public record RegisterRequestDto(
         String companyName,
         String companySlug,
@@ -11,6 +9,6 @@ public record RegisterRequestDto(
         String password,
         String firstName,
         String lastName,
-        RegisterSelectedModule selectedModule
+        RegisterSelectedModuleDto selectedModule
 ) {
 }

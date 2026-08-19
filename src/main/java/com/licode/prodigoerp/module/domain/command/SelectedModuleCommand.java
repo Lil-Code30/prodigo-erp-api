@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.command;
+package com.licode.prodigoerp.module.domain.command;
 
 public record SelectedModuleCommand(
         Long moduleId,
