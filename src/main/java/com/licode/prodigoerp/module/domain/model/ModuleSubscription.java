@@ -1,10 +1,13 @@
 package com.licode.prodigoerp.module.domain.model;
 
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
+
+@Data
 public class ModuleSubscription {
 
     private Long id;
