@@ -1,8 +1,8 @@
 package com.licode.prodigoerp.auth.adapter.output.persistence.user;
 
 import com.licode.prodigoerp.auth.adapter.input.rest.dto.RegisterRequestDto;
-import com.licode.prodigoerp.auth.application.port.output.query.UserQueryRepositoryPort;
-import com.licode.prodigoerp.auth.application.port.output.command.UserCommandRepositoryPort;
+import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
+import com.licode.prodigoerp.auth.application.port.output.UserCommandRepositoryPort;
 import com.licode.prodigoerp.auth.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements UserCommandRepositoryPort, UserQueryRepositoryPort {
+public class LoadUserPersistenceAdapter implements UserCommandRepositoryPort, LoadUserPort {
 
     private final JpaUserRepository jpaUserRepository;
 

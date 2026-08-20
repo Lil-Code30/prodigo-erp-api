@@ -1,7 +1,7 @@
 package com.licode.prodigoerp.auth.application.service;
 
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
-import com.licode.prodigoerp.auth.application.port.output.query.UserQueryRepositoryPort;
+import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.domain.command.AuthResponseCommand;
 import com.licode.prodigoerp.auth.domain.command.RegisterUserCommand;
 import com.licode.prodigoerp.auth.domain.exception.ConflictException;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserService implements RegisterUserUseCase {
 
-    private final UserQueryRepositoryPort userQueryRepositoryPort;
+    private final LoadUserPort loadUserPort;
     private final TenantLookUpUseCase tenantLookUpUseCase;
     private final CreateTenantUseCase createTenantUseCase;
     private final TenantEntitlementUseCase  tenantEntitlementUseCase;
@@ -32,11 +32,11 @@ public class UserService implements RegisterUserUseCase {
     public AuthResponseCommand register(RegisterUserCommand registerUserCommand) {
 
         // check if the email, username already exist in the db
-        if(userQueryRepositoryPort.findUserByUsername(registerUserCommand.username()).isPresent()){
+        if(loadUserPort.findUserByUsername(registerUserCommand.username()).isPresent()){
             throw new ConflictException("Username already exists");
         }
 
-        if(userQueryRepositoryPort.findUserByEmail(registerUserCommand.email()).isPresent() ) {
+        if(loadUserPort.findUserByEmail(registerUserCommand.email()).isPresent() ) {
             throw new ConflictException("Email already exists");
         };
 
