@@ -5,6 +5,8 @@ import com.licode.prodigoerp.auth.application.port.output.query.UserQueryReposit
 import com.licode.prodigoerp.auth.domain.command.AuthResponseCommand;
 import com.licode.prodigoerp.auth.domain.command.RegisterUserCommand;
 import com.licode.prodigoerp.auth.domain.exception.ConflictException;
+import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
+import com.licode.prodigoerp.module.domain.model.Module;
 import com.licode.prodigoerp.tenant.application.port.input.CreateTenantUseCase;
 import com.licode.prodigoerp.tenant.application.port.input.TenantEntitlementUseCase;
 import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
@@ -12,6 +14,8 @@ import com.licode.prodigoerp.tenant.domain.command.CreateTenantCommand;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class UserService implements RegisterUserUseCase {
     private final TenantLookUpUseCase tenantLookUpUseCase;
     private final CreateTenantUseCase createTenantUseCase;
     private final TenantEntitlementUseCase  tenantEntitlementUseCase;
+    private final TenantModuleSubCreateUseCase tenantModuleSubCreateUseCase;
 
 
     @Override
@@ -57,6 +62,12 @@ public class UserService implements RegisterUserUseCase {
         // Then we need to create the moduleSub from the selected module provided
         // NOTE: the first module in the list of the selected module is free
         // handle the module subscription
+        Map<String, Module> subscriptions = tenantModuleSubCreateUseCase.createTenantModuleSubscription(
+                createdTenant.getId(),
+                registerUserCommand.selectedModules()
+        );
+
+
 
 
         return null;
