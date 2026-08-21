@@ -1,5 +1,6 @@
-package com.licode.prodigoerp.common_old.security;
+package com.licode.prodigoerp.common.config;
 
+import com.licode.prodigoerp.common_old.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

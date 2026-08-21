@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.common_old.security;
+package com.licode.prodigoerp.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
