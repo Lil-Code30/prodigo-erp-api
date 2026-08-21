@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.module.domain.command;
+package com.licode.prodigoerp.module.application.port.input.command;
 
 import com.licode.prodigoerp.module.domain.model.Module;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;

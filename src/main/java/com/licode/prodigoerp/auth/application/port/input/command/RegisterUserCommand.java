@@ -1,7 +1,7 @@
 package com.licode.prodigoerp.auth.application.port.input.command;
 
 
-import com.licode.prodigoerp.module.domain.command.SelectedModuleCommand;
+import com.licode.prodigoerp.module.application.port.input.command.SelectedModuleCommand;
 
 import java.util.List;
 
