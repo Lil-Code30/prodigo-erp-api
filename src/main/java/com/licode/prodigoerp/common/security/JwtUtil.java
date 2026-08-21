@@ -1,6 +1,6 @@
-package com.licode.prodigoerp.common_old.security;
+package com.licode.prodigoerp.common.security;
 
-import com.licode.prodigoerp.auth.domain.exception.JwtValidationException;
+import com.licode.prodigoerp.common.security.exception.JwtValidationException;
 import com.licode.prodigoerp.auth.adapter.input.security.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -42,34 +42,34 @@ public class JwtUtil {
     /**
      * Generate Access Token
      */
-    public String generateAccessToken(UserPrincipal principal) {
-
-        var user = principal.getUser();
+    public String generateAccessToken(
+            Long userId, String username, String email,
+            Long tenantId, String tenantSlug,
+            List<String> roles, List<String> permissions
+    ) {
 
         // Going to loop through the authorities, then find all authorities starting with "ROLE_"
-        List<String> roles = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
+        List<String> refixRoles = roles.stream()
                 .filter(a -> a.startsWith("ROLE_"))
                 .map(a -> a.substring(5))
                 .toList();
 
-        List<String> permissions = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
+        List<String> prefixPermissions = permissions.stream()
                 .filter(a -> a.startsWith("PERM_"))
                 .map(a -> a.substring(5))
                 .toList();
 
         return Jwts.builder()
                 .issuer("Prodigo")
-                .subject(String.valueOf(user.getId()))
+                .subject(userId.toString())
                 .claim("type", "access")
-                .claim("userId", user.getId())
-                .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("tenantId", user.getTenantJpaEntity() != null ? user.getTenantJpaEntity().getId() : null)
-                .claim("tenantSlug", user.getTenantJpaEntity() != null ? user.getTenantJpaEntity().getSlug() : null)
-                .claim("roles", roles)
-                .claim("permissions", permissions)
+                .claim("userId", userId)
+                .claim("username", username)
+                .claim("email", email)
+                .claim("tenantId", tenantId)
+                .claim("tenantSlug", tenantSlug)
+                .claim("roles", refixRoles)
+                .claim("permissions", prefixPermissions)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key)

@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.exception;
+package com.licode.prodigoerp.common.security.exception;
 
 public class JwtValidationException extends RuntimeException {
     public JwtValidationException(String message) { super(message); }
