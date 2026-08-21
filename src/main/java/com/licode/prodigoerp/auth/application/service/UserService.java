@@ -2,15 +2,17 @@ package com.licode.prodigoerp.auth.application.service;
 
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
-import com.licode.prodigoerp.auth.domain.command.AuthResponseCommand;
-import com.licode.prodigoerp.auth.domain.command.RegisterUserCommand;
-import com.licode.prodigoerp.auth.domain.exception.ConflictException;
+import com.licode.prodigoerp.auth.application.port.output.SaveUserPort;
+import com.licode.prodigoerp.auth.application.port.input.command.AuthResponseCommand;
+import com.licode.prodigoerp.auth.application.port.input.command.RegisterUserCommand;
+import com.licode.prodigoerp.common.exception.ConflictException;
+import com.licode.prodigoerp.auth.domain.model.User;
 import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
 import com.licode.prodigoerp.module.domain.model.Module;
 import com.licode.prodigoerp.tenant.application.port.input.CreateTenantUseCase;
 import com.licode.prodigoerp.tenant.application.port.input.TenantEntitlementUseCase;
 import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
-import com.licode.prodigoerp.tenant.domain.command.CreateTenantCommand;
+import com.licode.prodigoerp.tenant.application.port.input.command.CreateTenantCommand;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class UserService implements RegisterUserUseCase {
     private final CreateTenantUseCase createTenantUseCase;
     private final TenantEntitlementUseCase  tenantEntitlementUseCase;
     private final TenantModuleSubCreateUseCase tenantModuleSubCreateUseCase;
+    private final SaveUserPort saveUserPort;
 
 
     @Override
@@ -66,6 +69,13 @@ public class UserService implements RegisterUserUseCase {
                 createdTenant.getId(),
                 registerUserCommand.selectedModules()
         );
+
+        // Save the user to the DB but first need to build the user
+        User createdUser = new User();
+
+        User fetchedUser = saveUserPort.save(createdUser);
+
+        // TODO: RefreshToken Management here
 
 
 

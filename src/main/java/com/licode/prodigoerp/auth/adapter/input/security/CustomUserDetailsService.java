@@ -1,9 +1,9 @@
 package com.licode.prodigoerp.auth.adapter.input.security;
 
+import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
+import com.licode.prodigoerp.auth.application.port.output.RoleQueryPort;
+import com.licode.prodigoerp.auth.domain.model.User;
 import com.licode.prodigoerp.common.exception.NotFoundException;
-import com.licode.prodigoerp.user.entity.User;
-import com.licode.prodigoerp.user.repository.UserRepository;
-import com.licode.prodigoerp.user.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,13 +20,13 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final UserRoleRepository userRoleRepository;
+   private final LoadUserPort loadUserPort;
+   private final RoleQueryPort roleQueryPort;
 
     @Override
     public UserDetails loadUserByUsername(String username){
 
-        User user = userRepository.findByUsername(username)
+        User user = loadUserPort.findUserByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found with username: " + username));
 
         return buildPrincipal(user);
@@ -34,8 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public UserPrincipal buildPrincipal(User user){
 
-        List<String> roles = userRoleRepository.findActiveRoleNamesByUserId(user.getId());
-        List<String> permissions = userRoleRepository.findActivePermissionCodesByUserId(user.getId());
+        List<String> roles = roleQueryPort.findActiveRoleNames(user.getId());
+        List<String> permissions = roleQueryPort.findActivePermissionCodes(user.getId());
 
 
         // concatenating the roles and permissions in one collection to be used as granted authority

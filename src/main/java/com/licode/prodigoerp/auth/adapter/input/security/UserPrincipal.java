@@ -1,7 +1,7 @@
 package com.licode.prodigoerp.auth.adapter.input.security;
 
 
-import com.licode.prodigoerp.user.entity.User;
+import com.licode.prodigoerp.auth.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +39,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus().equals("ACTIVE");
+        return "ACTIVE".equals(user.getUsername());
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class LoadSaveUserPersistenceAdapter implements SaveUserPort, LoadUserPort {
+public class UserPersistenceAdapter implements SaveUserPort, LoadUserPort {
 
     private final JpaUserRepository jpaUserRepository;
 
