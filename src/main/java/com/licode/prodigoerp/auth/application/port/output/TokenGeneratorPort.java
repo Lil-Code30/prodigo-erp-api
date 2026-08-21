@@ -1,6 +1,6 @@
 package com.licode.prodigoerp.auth.application.port.output;
 
-public interface RefreshTokenCommandRepositoryPort {
+public interface TokenGeneratorPort {
 
 //    RefreshToken createRefreshToken ()
 }

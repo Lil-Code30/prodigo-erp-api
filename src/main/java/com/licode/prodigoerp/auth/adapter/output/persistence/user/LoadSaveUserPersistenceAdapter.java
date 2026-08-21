@@ -1,8 +1,7 @@
 package com.licode.prodigoerp.auth.adapter.output.persistence.user;
 
-import com.licode.prodigoerp.auth.adapter.input.rest.dto.RegisterRequestDto;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
-import com.licode.prodigoerp.auth.application.port.output.UserCommandRepositoryPort;
+import com.licode.prodigoerp.auth.application.port.output.SaveUserPort;
 import com.licode.prodigoerp.auth.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,12 +10,12 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class LoadUserPersistenceAdapter implements UserCommandRepositoryPort, LoadUserPort {
+public class LoadSaveUserPersistenceAdapter implements SaveUserPort, LoadUserPort {
 
     private final JpaUserRepository jpaUserRepository;
 
     @Override
-    public User registerUser(RegisterRequestDto registerRequestDto) { // TODO: find the datatype to be passe here
+    public User save(User user) { // TODO: find the datatype to be passe here
         // TODO: need to do all the steps for the registration
 
         return new User();
