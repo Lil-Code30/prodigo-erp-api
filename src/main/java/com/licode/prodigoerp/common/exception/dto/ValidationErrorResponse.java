@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.exception.dto;
+package com.licode.prodigoerp.common.exception.dto;
 
 import java.time.Instant;
 import java.util.List;

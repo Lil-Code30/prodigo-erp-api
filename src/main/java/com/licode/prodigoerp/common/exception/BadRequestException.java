@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.exception;
+package com.licode.prodigoerp.common.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

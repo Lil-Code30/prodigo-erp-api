@@ -1,6 +1,6 @@
 package com.licode.prodigoerp.tenant.application.service;
 
-import com.licode.prodigoerp.auth.domain.exception.NotFoundException;
+import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
 import com.licode.prodigoerp.tenant.application.port.output.TenantQueryRepositoryPort;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
