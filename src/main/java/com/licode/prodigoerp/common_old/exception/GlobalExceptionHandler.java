@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.common.exception;
+package com.licode.prodigoerp.common_old.exception;
 
 import com.licode.prodigoerp.auth.domain.exception.BadRequestException;
 import com.licode.prodigoerp.auth.domain.exception.ConflictException;

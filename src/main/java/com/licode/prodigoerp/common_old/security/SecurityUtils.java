@@ -1,8 +1,8 @@
-package com.licode.prodigoerp.common.security;
+package com.licode.prodigoerp.common_old.security;
 
-import com.licode.prodigoerp.common.SystemConstants;
-import com.licode.prodigoerp.common.exception.JwtValidationException;
-import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
+import com.licode.prodigoerp.common_old.SystemConstants;
+import com.licode.prodigoerp.auth.domain.exception.JwtValidationException;
+import com.licode.prodigoerp.common_old.security.dto.JwtPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

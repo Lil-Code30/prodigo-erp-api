@@ -2,7 +2,7 @@ package com.licode.prodigoerp.module.domain.command;
 
 
 
-import com.licode.prodigoerp.auth.domain.command.CreatePermissionCommand;
+import com.licode.prodigoerp.auth.application.port.input.command.CreatePermissionCommand;
 
 import java.math.BigDecimal;
 import java.util.List;

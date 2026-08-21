@@ -1,6 +1,7 @@
-package com.licode.prodigoerp.user.entity;
+package com.licode.prodigoerp.auth.adapter.input.security;
 
 
+import com.licode.prodigoerp.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;

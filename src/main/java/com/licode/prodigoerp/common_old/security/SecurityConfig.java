@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.common.security;
+package com.licode.prodigoerp.common_old.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;

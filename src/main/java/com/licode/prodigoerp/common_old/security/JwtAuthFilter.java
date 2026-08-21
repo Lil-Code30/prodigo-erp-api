@@ -1,7 +1,7 @@
-package com.licode.prodigoerp.common.security;
+package com.licode.prodigoerp.common_old.security;
 
-import com.licode.prodigoerp.common.exception.JwtValidationException;
-import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
+import com.licode.prodigoerp.auth.domain.exception.JwtValidationException;
+import com.licode.prodigoerp.common_old.security.dto.JwtPrincipal;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

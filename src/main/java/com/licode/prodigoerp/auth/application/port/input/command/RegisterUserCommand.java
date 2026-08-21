@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.command;
+package com.licode.prodigoerp.auth.application.port.input.command;
 
 
 import com.licode.prodigoerp.module.domain.command.SelectedModuleCommand;

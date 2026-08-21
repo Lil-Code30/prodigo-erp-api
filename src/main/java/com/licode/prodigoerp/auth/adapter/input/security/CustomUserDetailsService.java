@@ -1,8 +1,7 @@
-package com.licode.prodigoerp.common.security;
+package com.licode.prodigoerp.auth.adapter.input.security;
 
-import com.licode.prodigoerp.common.exception.NotFoundException;
+import com.licode.prodigoerp.auth.domain.exception.NotFoundException;
 import com.licode.prodigoerp.user.entity.User;
-import com.licode.prodigoerp.user.entity.UserPrincipal;
 import com.licode.prodigoerp.user.repository.UserRepository;
 import com.licode.prodigoerp.user.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;

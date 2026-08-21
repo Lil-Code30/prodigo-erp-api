@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.common.config;
+package com.licode.prodigoerp.common_old.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ApiVersionConfigurer;

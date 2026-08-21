@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.auth.domain.command;
+package com.licode.prodigoerp.auth.application.port.input.command;
 
 public record AuthResponseCommand(
         Long userId,

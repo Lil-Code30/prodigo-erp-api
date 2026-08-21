@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.common.security.dto;
+package com.licode.prodigoerp.common_old.security.dto;
 
 public record JwtPrincipal(
         Long userId,
