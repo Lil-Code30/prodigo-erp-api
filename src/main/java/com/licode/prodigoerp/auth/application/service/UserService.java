@@ -1,13 +1,16 @@
 package com.licode.prodigoerp.auth.application.service;
 
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
+import com.licode.prodigoerp.auth.application.port.input.SaveAuthoritiesUseCase;
 import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
+import com.licode.prodigoerp.auth.application.port.input.command.CreateRoleCommand;
 import com.licode.prodigoerp.auth.application.port.input.command.CreateUserCommand;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
 import com.licode.prodigoerp.auth.application.port.input.command.AuthResponseCommand;
 import com.licode.prodigoerp.auth.application.port.input.command.RegisterUserCommand;
 import com.licode.prodigoerp.auth.domain.model.RefreshToken;
+import com.licode.prodigoerp.auth.domain.model.Role;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.auth.domain.model.User;
 import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
@@ -33,6 +36,7 @@ public class UserService implements RegisterUserUseCase {
     private final TenantModuleSubCreateUseCase tenantModuleSubCreateUseCase;
     private final RefreshTokenStorePort refreshTokenStorePort;
     private final SaveUserUseCase saveUserUseCase;
+    private final SaveAuthoritiesUseCase saveAuthoritiesUseCase;
 
 
 
@@ -76,7 +80,7 @@ public class UserService implements RegisterUserUseCase {
         );
 
         // Save the user to the DB but first need to build the user
-        String actor = "PRODIGO_ERP_API"; // SINCE it is the system creating the user
+        String author = "PRODIGO_ERP_API"; // SINCE it is the system creating the user
 
         User fetchedUser = saveUserUseCase.save(
                 new CreateUserCommand(
@@ -88,14 +92,23 @@ public class UserService implements RegisterUserUseCase {
                         registerUserCommand.lastName(),
                         false
                 ),
-                actor
+                author
         );
 
         RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
 
-        // TODO : we need to now create the ADMIN ROLE
-        // DO I need to separate the Admin role creation ?
+        // here is the Admin role ( for the company (tenant) creating the account)
+        Role adminRole = saveAuthoritiesUseCase.saveRole(
+                new CreateRoleCommand(
+                        "ADMIN",
+                        createdTenant,
+                        "ROLE_ADMIN : This is the role that has full access to the Tenant (Company)",
+                        false,
+                        author
+                )
+        );
 
+        // TODO : implement the role assignation
 
 
         return null;

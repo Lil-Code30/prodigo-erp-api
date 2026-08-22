@@ -1,6 +1,6 @@
-package com.licode.prodigoerp.user.entity;
+package com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity;
 
-import com.licode.prodigoerp.tenant.entity.Tenant;
+import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantJpaEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +16,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "roles")
-public class Role {
+public class RoleJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -25,7 +25,7 @@ public class Role {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "tenant_id")
-    private Tenant tenant;
+    private TenantJpaEntity tenantJpaEntity;
 
     @Size(max = 20)
     @NotNull
