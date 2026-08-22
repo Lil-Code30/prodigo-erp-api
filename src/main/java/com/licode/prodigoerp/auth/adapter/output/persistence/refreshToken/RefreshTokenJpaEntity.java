@@ -1,6 +1,6 @@
 package com.licode.prodigoerp.auth.adapter.output.persistence.refreshToken;
 
-import com.licode.prodigoerp.user.entity.User;
+import com.licode.prodigoerp.auth.adapter.output.persistence.user.UserJpaEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class RefreshTokenJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserJpaEntity userJpaEntity;
 
     @NotNull
     @Column(name = "expiry_date", nullable = false)

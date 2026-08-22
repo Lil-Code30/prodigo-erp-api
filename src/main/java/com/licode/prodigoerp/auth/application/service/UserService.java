@@ -2,9 +2,12 @@ package com.licode.prodigoerp.auth.application.service;
 
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
+import com.licode.prodigoerp.auth.application.port.output.PasswordEncoderPort;
+import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
 import com.licode.prodigoerp.auth.application.port.output.SaveUserPort;
 import com.licode.prodigoerp.auth.application.port.input.command.AuthResponseCommand;
 import com.licode.prodigoerp.auth.application.port.input.command.RegisterUserCommand;
+import com.licode.prodigoerp.auth.domain.model.RefreshToken;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.auth.domain.model.User;
 import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
@@ -17,6 +20,7 @@ import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Map;
 
 @Service
@@ -29,6 +33,8 @@ public class UserService implements RegisterUserUseCase {
     private final TenantEntitlementUseCase  tenantEntitlementUseCase;
     private final TenantModuleSubCreateUseCase tenantModuleSubCreateUseCase;
     private final SaveUserPort saveUserPort;
+    private final PasswordEncoderPort passwordEncoderPort;
+    private final RefreshTokenStorePort refreshTokenStorePort;
 
 
     @Override
@@ -72,10 +78,31 @@ public class UserService implements RegisterUserUseCase {
 
         // Save the user to the DB but first need to build the user
         User createdUser = new User();
+        Instant now = Instant.now();
+
+        createdUser.setId(null);
+        createdUser.setUsername(registerUserCommand.username());
+        createdUser.setEmail(registerUserCommand.email());
+
+        String hashPassword = passwordEncoderPort.encode(registerUserCommand.password());
+        createdUser.setPassword(hashPassword);
+        createdUser.setTenant(createdTenant);
+        createdUser.setFirstName(registerUserCommand.firstName());
+        createdUser.setLastName(registerUserCommand.lastName());
+        createdUser.setStatus("ACTIVE");
+        createdUser.setIsSuperAdmin(false);
+
+        createdUser.setLastLogin(now);
+        createdUser.setCreatedAt(now);
+        createdUser.setUpdatedAt(now);
+
+        String actor = "PRODIGO_ERP_API"; // SINCE it is the system creating the user
+        createdUser.setCreatedBy(actor);
+        createdUser.setUpdatedBy(actor);
 
         User fetchedUser = saveUserPort.save(createdUser);
 
-        // TODO: RefreshToken Management here
+        RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
 
 
 
