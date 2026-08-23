@@ -1,6 +1,5 @@
 package com.licode.prodigoerp.common.security;
 
-import com.licode.prodigoerp.common_old.SystemConstants;
 import com.licode.prodigoerp.common.security.exception.JwtValidationException;
 import com.licode.prodigoerp.common.security.dto.JwtPrincipal;
 import org.springframework.security.core.Authentication;
@@ -38,6 +37,6 @@ public class SecurityUtils {
     public static String getCurrentUsernameOrElseSysName() {
         return getCurrentUserOptional()
                 .map(JwtPrincipal::username)
-                .orElse(SystemConstants.SYSTEM_NAME);
+                .orElse("PRODIGO_ERP_API");
     }
 }
