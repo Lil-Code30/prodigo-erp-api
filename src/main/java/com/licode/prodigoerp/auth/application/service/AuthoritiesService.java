@@ -1,9 +1,11 @@
 package com.licode.prodigoerp.auth.application.service;
 
 import com.licode.prodigoerp.auth.application.port.input.SaveAuthoritiesUseCase;
+import com.licode.prodigoerp.auth.application.port.input.command.AssignRoleCommand;
 import com.licode.prodigoerp.auth.application.port.input.command.CreateRoleCommand;
 import com.licode.prodigoerp.auth.application.port.output.SaveRolePort;
 import com.licode.prodigoerp.auth.domain.model.Role;
+import com.licode.prodigoerp.auth.domain.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +36,13 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         role.setUpdatedBy(roleCommand.author());
 
         return saveRolePort.saveRole(role);
+    }
+
+    @Override
+    public void assignedRoleToUser(AssignRoleCommand assignRoleCommand) {
+
+        UserRole userRole = new UserRole();
+
+        saveRolePort.saveUserRole(userRole);
     }
 }

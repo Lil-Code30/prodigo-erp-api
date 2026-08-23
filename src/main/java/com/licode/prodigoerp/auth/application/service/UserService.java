@@ -3,12 +3,9 @@ package com.licode.prodigoerp.auth.application.service;
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
 import com.licode.prodigoerp.auth.application.port.input.SaveAuthoritiesUseCase;
 import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
-import com.licode.prodigoerp.auth.application.port.input.command.CreateRoleCommand;
-import com.licode.prodigoerp.auth.application.port.input.command.CreateUserCommand;
+import com.licode.prodigoerp.auth.application.port.input.command.*;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
-import com.licode.prodigoerp.auth.application.port.input.command.AuthResponseCommand;
-import com.licode.prodigoerp.auth.application.port.input.command.RegisterUserCommand;
 import com.licode.prodigoerp.auth.domain.model.RefreshToken;
 import com.licode.prodigoerp.auth.domain.model.Role;
 import com.licode.prodigoerp.common.exception.ConflictException;
@@ -108,7 +105,16 @@ public class UserService implements RegisterUserUseCase {
                 )
         );
 
-        // TODO : implement the role assignation
+        // Then we need to associate the admin role to the user
+        saveAuthoritiesUseCase.assignedRoleToUser(
+                new AssignRoleCommand(
+                        fetchedUser,
+                        adminRole,
+                        createdTenant.getId(),
+                        author
+                )
+        );
+
 
 
         return null;
