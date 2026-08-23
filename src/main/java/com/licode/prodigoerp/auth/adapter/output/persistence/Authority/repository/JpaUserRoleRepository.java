@@ -10,7 +10,7 @@ import java.util.List;
 public interface JpaUserRoleRepository extends JpaRepository<UserRoleJpaEntity, Long> {
 
     @Query("""
-        SELECT r.name FROM UserRoleJpaEntity ur JOIN ur.role r
+        SELECT r.name FROM UserRoleJpaEntity ur JOIN ur.roleJpaEntity r
         WHERE ur.userJpaEntity.id = :userId
         AND (ur.expiresAt IS NULL OR ur.expiresAt > CURRENT_TIMESTAMP)
         """)
@@ -18,9 +18,9 @@ public interface JpaUserRoleRepository extends JpaRepository<UserRoleJpaEntity, 
 
     @Query("""
         SELECT DISTINCT p.code FROM UserRoleJpaEntity ur
-        JOIN ur.role r
-        JOIN RolePermission rp ON rp.role = r
-        JOIN rp.permission p
+        JOIN ur.roleJpaEntity r
+        JOIN RolePermissionJpaEntity rp ON rp.roleJpaEntity= r
+        JOIN rp.permissionJpaEntity p
         WHERE ur.userJpaEntity.id = :userId
         AND (ur.expiresAt IS NULL OR ur.expiresAt > CURRENT_TIMESTAMP)
         """)

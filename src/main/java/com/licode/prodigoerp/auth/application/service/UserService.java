@@ -93,7 +93,6 @@ public class UserService implements RegisterUserUseCase {
                 author
         );
 
-        RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
 
         // here is the Admin role ( for the company (tenant) creating the account)
         Role adminRole = saveAuthoritiesUseCase.saveRole(
@@ -109,8 +108,8 @@ public class UserService implements RegisterUserUseCase {
         // Then we need to associate the admin role to the user
         saveAuthoritiesUseCase.assignedRoleToUser(
                 new AssignRoleCommand(
-                        fetchedUser,
-                        adminRole,
+                        fetchedUser.getId(),
+                        adminRole.getId(),
                         createdTenant.getId(),
                         author
                 )
@@ -133,7 +132,15 @@ public class UserService implements RegisterUserUseCase {
             Permission permission = saveAuthoritiesUseCase.savePermission(createPermissionCommand);
 
             // For every permission created, we should assign the permission to that role
-            // TODO Assign Permission to the role
+            saveAuthoritiesUseCase.assignedPermissionToRole(
+                    permission.getId(),
+                    new AssignRoleCommand(
+                           fetchedUser.getId(),
+                           adminRole.getId(),
+                           createdTenant.getId(),
+                           author
+                    )
+            );
         });
 
 

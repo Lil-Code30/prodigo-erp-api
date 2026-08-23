@@ -11,5 +11,5 @@ public interface SaveAuthoritiesUseCase {
     Role saveRole(CreateRoleCommand roleCommand);
     void assignedRoleToUser(AssignRoleCommand assignRoleCommand);
     Permission  savePermission(CreatePermissionCommand permissionCommand);
-
+    void assignedPermissionToRole(Long permissionId, AssignRoleCommand assignRoleCommand);
 }

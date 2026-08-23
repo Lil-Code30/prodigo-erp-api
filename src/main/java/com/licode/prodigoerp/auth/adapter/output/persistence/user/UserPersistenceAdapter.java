@@ -15,13 +15,6 @@ public class UserPersistenceAdapter implements SaveUserPort, LoadUserPort {
     private final JpaUserRepository jpaUserRepository;
 
     @Override
-    public User save(User user) { // TODO: find the datatype to be passe here
-        // TODO: need to do all the steps for the registration
-
-        return new User();
-    }
-
-    @Override
     public Optional<User> findUserByEmail(String email) {
 
         return jpaUserRepository.findByEmail(email).map(UserJpaMapper::toDomainModel);
@@ -31,5 +24,17 @@ public class UserPersistenceAdapter implements SaveUserPort, LoadUserPort {
     public Optional<User> findUserByUsername(String username) {
 
         return jpaUserRepository.findByUsername(username).map(UserJpaMapper::toDomainModel);
+    }
+
+    @Override
+    public Optional<User> findUserById(Long id) {
+        return jpaUserRepository.findById(id).map(UserJpaMapper::toDomainModel);
+    }
+
+    @Override
+    public User save(User user) {
+        UserJpaEntity userJpaEntity = jpaUserRepository.save(UserJpaMapper.toJpaEntity(user));
+
+        return UserJpaMapper.toDomainModel(userJpaEntity);
     }
 }

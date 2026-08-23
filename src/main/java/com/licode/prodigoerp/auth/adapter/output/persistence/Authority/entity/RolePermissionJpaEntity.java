@@ -1,4 +1,4 @@
-package com.licode.prodigoerp.user.entity;
+package com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "role_permissions")
-public class RolePermission {
+public class RolePermissionJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -25,13 +25,13 @@ public class RolePermission {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    private RoleJpaEntity roleJpaEntity;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "permission_id", nullable = false)
-    private Permission permission;
+    private PermissionJpaEntity permissionJpaEntity;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
