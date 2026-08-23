@@ -5,7 +5,7 @@ import com.licode.prodigoerp.auth.domain.model.UserRole;
 
 public interface SaveRolePort {
     // NOTE: We will manage the saving of the
-    // ROlE, USERROLE, PERMISSIONS here
+    // ROlE, USERROLE
 
     Role saveRole(Role role);
 

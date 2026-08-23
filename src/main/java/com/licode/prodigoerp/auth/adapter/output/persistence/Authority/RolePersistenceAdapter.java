@@ -4,11 +4,16 @@ import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity.Ro
 import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity.UserRoleJpaEntity;
 import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.mapper.RoleJpaMapper;
 import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.mapper.UserRoleJpaMapper;
+import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.repository.JpaPermissionRepository;
+import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.repository.JpaRolePermissionRepository;
 import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.repository.JpaRoleRepository;
 import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.repository.JpaUserRoleRepository;
 import com.licode.prodigoerp.auth.application.port.output.RoleQueryPort;
+import com.licode.prodigoerp.auth.application.port.output.SavePermissionPort;
 import com.licode.prodigoerp.auth.application.port.output.SaveRolePort;
+import com.licode.prodigoerp.auth.domain.model.Permission;
 import com.licode.prodigoerp.auth.domain.model.Role;
+import com.licode.prodigoerp.auth.domain.model.RolePermission;
 import com.licode.prodigoerp.auth.domain.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,9 +23,11 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort {
+public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort, SavePermissionPort {
     final private JpaRoleRepository jpaRoleRepository;
     final private JpaUserRoleRepository jpaUserRoleRepository;
+    final private JpaPermissionRepository jpaPermissionRepository;
+    final private JpaRolePermissionRepository jpaRolePermissionRepository;
 
     @Override
     public List<String> findActiveRoleNames(Long userId) {
@@ -52,5 +59,15 @@ public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort {
         UserRoleJpaEntity userRoleJpaEntity =  jpaUserRoleRepository.save(UserRoleJpaMapper.toJpaEntity(userRole));
 
         UserRoleJpaMapper.toDomainModel(userRoleJpaEntity);
+    }
+
+    @Override
+    public Permission savePermission(Permission permission) {
+        return null;
+    }
+
+    @Override
+    public void assignPermissionToRole(RolePermission rolePermission) {
+
     }
 }

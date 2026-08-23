@@ -1,6 +1,6 @@
-package com.licode.prodigoerp.user.entity;
+package com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity;
 
-import com.licode.prodigoerp.module.entity.Module;
+import com.licode.prodigoerp.module.adapter.output.persistence.module.ModuleJpaEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +16,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "permissions")
-public class Permission {
+public class PermissionJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -45,7 +45,7 @@ public class Permission {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "module_id")
-    private Module module;
+    private ModuleJpaEntity moduleJpaEntity;
 
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")

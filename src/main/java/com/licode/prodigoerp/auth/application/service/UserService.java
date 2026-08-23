@@ -6,6 +6,7 @@ import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
 import com.licode.prodigoerp.auth.application.port.input.command.*;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
+import com.licode.prodigoerp.auth.domain.model.Permission;
 import com.licode.prodigoerp.auth.domain.model.RefreshToken;
 import com.licode.prodigoerp.auth.domain.model.Role;
 import com.licode.prodigoerp.common.exception.ConflictException;
@@ -114,6 +115,27 @@ public class UserService implements RegisterUserUseCase {
                         author
                 )
         );
+
+        // we need to create permission/module for the role created :
+        //NOTE: since this will be the endpoint for the Tenant Admin creation,
+        // he/she will have all the permissions i.e. module_CRUD (e.x: CRM_CRUD or INVOICE_CRUD)
+        // This is taking the module key as the resource + the action which is the CRUD
+        subscriptions.forEach((key, value) -> {
+
+            CreatePermissionCommand createPermissionCommand = new CreatePermissionCommand(
+                    "Complete (FULL) Access to the " + value.getName() + " Module",
+                    value.getModuleKey(),
+                    "CRUD",
+                    value.getModuleKey(),
+                    author
+            );
+
+            Permission permission = saveAuthoritiesUseCase.savePermission(createPermissionCommand);
+
+            // For every permission created, we should assign the permission to that role
+            // TODO Assign Permission to the role
+        });
+
 
 
 
