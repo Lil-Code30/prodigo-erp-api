@@ -48,19 +48,8 @@ public class JwtUtil {
             List<String> roles, List<String> permissions
     ) {
 
-        // Going to loop through the authorities, then find all authorities starting with "ROLE_"
-        List<String> refixRoles = roles.stream()
-                .filter(a -> a.startsWith("ROLE_"))
-                .map(a -> a.substring(5))
-                .toList();
-
-        List<String> prefixPermissions = permissions.stream()
-                .filter(a -> a.startsWith("PERM_"))
-                .map(a -> a.substring(5))
-                .toList();
-
         return Jwts.builder()
-                .issuer("Prodigo")
+                .issuer("Prodigo_ERP_SYSTEM")
                 .subject(userId.toString())
                 .claim("type", "access")
                 .claim("userId", userId)
@@ -68,8 +57,8 @@ public class JwtUtil {
                 .claim("email", email)
                 .claim("tenantId", tenantId)
                 .claim("tenantSlug", tenantSlug)
-                .claim("roles", refixRoles)
-                .claim("permissions", prefixPermissions)
+                .claim("roles", roles)
+                .claim("permissions", permissions)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key)

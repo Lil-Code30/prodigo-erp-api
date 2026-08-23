@@ -5,6 +5,6 @@ public record AuthResponseDto(
         String tenantSlug,
         String accessToken,
         String refreshToken
-        // TODO need a way to add ggranted Authorities
+        // TODO need a way to add granted Authorities
 ) {
 }

@@ -6,6 +6,7 @@ import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
 import com.licode.prodigoerp.auth.application.port.input.command.*;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
+import com.licode.prodigoerp.auth.application.port.output.TokenGeneratorPort;
 import com.licode.prodigoerp.auth.domain.model.Permission;
 import com.licode.prodigoerp.auth.domain.model.RefreshToken;
 import com.licode.prodigoerp.auth.domain.model.Role;
@@ -35,6 +36,7 @@ public class UserService implements RegisterUserUseCase {
     private final RefreshTokenStorePort refreshTokenStorePort;
     private final SaveUserUseCase saveUserUseCase;
     private final SaveAuthoritiesUseCase saveAuthoritiesUseCase;
+    private final TokenGeneratorPort  tokenGeneratorPort;
 
 
 
@@ -123,7 +125,7 @@ public class UserService implements RegisterUserUseCase {
 
             CreatePermissionCommand createPermissionCommand = new CreatePermissionCommand(
                     "Complete (FULL) Access to the " + value.getName() + " Module",
-                    value.getModuleKey(),
+                    key,
                     "CRUD",
                     value.getModuleKey(),
                     author
@@ -143,9 +145,15 @@ public class UserService implements RegisterUserUseCase {
             );
         });
 
+        // Generating the access and refresh token
+        RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
+        String accessToken = tokenGeneratorPort.generateAccessToken(fetchedUser);
 
-
-
-        return null;
+        return new AuthResponseCommand(
+                fetchedUser.getId(),
+                createdTenant.getSlug(),
+                accessToken,
+                refreshToken.getToken()
+        );
     }
 }
