@@ -21,6 +21,7 @@ import com.licode.prodigoerp.tenant.application.port.input.command.CreateTenantC
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class UserService implements RegisterUserUseCase {
 
 
     @Override
+    @Transactional
     public AuthResponseCommand register(RegisterUserCommand registerUserCommand) {
 
         // check if the email, username already exist in the db

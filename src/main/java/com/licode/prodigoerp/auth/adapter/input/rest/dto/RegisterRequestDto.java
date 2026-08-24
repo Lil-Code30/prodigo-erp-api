@@ -1,5 +1,7 @@
 package com.licode.prodigoerp.auth.adapter.input.rest.dto;
 
+import java.util.List;
+
 public record RegisterRequestDto(
         String companyName,
         String companySlug,
@@ -9,6 +11,6 @@ public record RegisterRequestDto(
         String password,
         String firstName,
         String lastName,
-        RegisterSelectedModuleDto selectedModule
+        List<RegisterSelectedModuleDto> selectedModules
 ) {
 }
