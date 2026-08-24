@@ -3,7 +3,6 @@ package com.licode.prodigoerp.auth.adapter.input.rest.controller;
 import com.licode.prodigoerp.auth.adapter.input.rest.dto.AuthResponseDto;
 import com.licode.prodigoerp.auth.adapter.input.rest.dto.RegisterRequestDto;
 import com.licode.prodigoerp.auth.adapter.input.rest.mapper.AuthWebMapper;
-import com.licode.prodigoerp.auth.adapter.input.security.CustomUserDetailsService;
 import com.licode.prodigoerp.auth.application.port.input.RegisterUserUseCase;
 import com.licode.prodigoerp.auth.application.port.input.command.AuthResponseCommand;
 import jakarta.validation.Valid;
@@ -25,7 +24,6 @@ public class UserController {
 
     private final RegisterUserUseCase registerUserUseCase;
     private final AuthWebMapper authWebMapper;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @PostMapping(value = "/register", version = "1.0")
     public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
