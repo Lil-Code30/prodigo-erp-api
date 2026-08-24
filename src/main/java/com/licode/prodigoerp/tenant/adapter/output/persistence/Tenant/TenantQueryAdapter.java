@@ -1,6 +1,6 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant;
 
-import com.licode.prodigoerp.tenant.application.port.output.TenantQueryRepositoryPort;
+import com.licode.prodigoerp.tenant.application.port.output.TenantQueryPort;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class TenantQueryAdapter implements TenantQueryRepositoryPort {
+public class TenantQueryAdapter implements TenantQueryPort {
 
     private final JpaTenantRepository jpaTenantRepository;
 

@@ -4,7 +4,7 @@ import com.licode.prodigoerp.tenant.domain.model.Tenant;
 
 import java.util.Optional;
 
-public interface TenantQueryRepositoryPort {
+public interface TenantQueryPort {
 
     Optional<Tenant> findTenantById(Long id);
     Optional<Tenant> findTenantBySlug(String slug);
