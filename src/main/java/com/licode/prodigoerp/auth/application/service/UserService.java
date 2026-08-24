@@ -127,11 +127,10 @@ public class UserService implements RegisterUserUseCase {
                     "Complete (FULL) Access to the " + value.getName() + " Module",
                     key,
                     "CRUD",
-                    value.getModuleKey(),
-                    author
+                    value.getModuleKey()
             );
 
-            Permission permission = saveAuthoritiesUseCase.savePermission(createPermissionCommand);
+            Permission permission = saveAuthoritiesUseCase.savePermission(createPermissionCommand, author);
 
             // For every permission created, we should assign the permission to that role
             saveAuthoritiesUseCase.assignedPermissionToRole(

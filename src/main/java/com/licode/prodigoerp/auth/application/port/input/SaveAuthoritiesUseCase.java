@@ -10,6 +10,6 @@ public interface SaveAuthoritiesUseCase {
 
     Role saveRole(CreateRoleCommand roleCommand);
     void assignedRoleToUser(AssignRoleCommand assignRoleCommand);
-    Permission  savePermission(CreatePermissionCommand permissionCommand);
+    Permission  savePermission(CreatePermissionCommand permissionCommand, String author);
     void assignedPermissionToRole(Long permissionId, AssignRoleCommand assignRoleCommand);
 }

@@ -85,17 +85,18 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     }
 
     @Override
-    public Permission savePermission(CreatePermissionCommand permissionCommand) {
+    public Permission savePermission(CreatePermissionCommand permissionCommand, String author) {
         Permission permission = new Permission();
         Instant now = Instant.now();
 
-        String permissionCode = permissionCommand.resource() + "." + permissionCommand.action();
+        // Permission sample : CRM_CUSTOMER_CREATE
+        String permissionCode = permissionCommand.moduleKey() + "." + permissionCommand.resource() + "." + permissionCommand.action();
 
         // We got the module key, then we need to fetch the whole Module object to create the associate permission
         Optional<Module> module = moduleLookUpUseCase.findModuleByModuleKey(permissionCommand.moduleKey());
 
         if (module.isEmpty()) {
-            throw  new NotFoundException("Module with key " + permissionCommand.moduleKey() +" not found");
+            throw  new NotFoundException("Module with key " + permissionCommand.moduleKey() +" not found - Permission create");
         }
 
         permission.setId(null);
@@ -107,8 +108,8 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
 
         permission.setCreatedAt(now);
         permission.setUpdatedAt(now);
-        permission.setCreatedBy(permissionCommand.author());
-        permission.setUpdatedBy(permissionCommand.author());
+        permission.setCreatedBy(author);
+        permission.setUpdatedBy(author);
 
         return savePermissionPort.savePermission(permission);
     }

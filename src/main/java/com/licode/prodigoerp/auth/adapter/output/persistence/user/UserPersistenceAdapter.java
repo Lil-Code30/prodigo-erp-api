@@ -5,6 +5,7 @@ import com.licode.prodigoerp.auth.application.port.output.SaveUserPort;
 import com.licode.prodigoerp.auth.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ public class UserPersistenceAdapter implements SaveUserPort, LoadUserPort {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         UserJpaEntity userJpaEntity = jpaUserRepository.save(UserJpaMapper.toJpaEntity(user));
 

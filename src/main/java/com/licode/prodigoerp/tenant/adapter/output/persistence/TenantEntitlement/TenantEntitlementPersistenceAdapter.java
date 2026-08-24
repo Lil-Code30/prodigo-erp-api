@@ -1,11 +1,10 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.TenantEntitlement;
 
-import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantJpaMapper;
 import com.licode.prodigoerp.tenant.application.port.output.TenantEntitlementCreatePort;
-import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import com.licode.prodigoerp.tenant.domain.model.TenantEntitlement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
@@ -16,6 +15,7 @@ public class TenantEntitlementPersistenceAdapter implements TenantEntitlementCre
 
 
     @Override
+    @Transactional
     public TenantEntitlement createDefaultTenantEntitlement(TenantEntitlement tenantEntitlement) {
         TenantJpaEntitlement tenantJpaEntitlement = jpaTenantEntitlementRepository.save(TenantEntitlementJpaMapper.toDbCreateTenantEntitlement(tenantEntitlement));
 

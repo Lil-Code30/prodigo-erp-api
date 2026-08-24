@@ -6,7 +6,6 @@ public record CreatePermissionCommand(
         String description,
         String moduleKey,
         String action,
-        String resource,
-        String author
+        String resource
 ) {
 }
