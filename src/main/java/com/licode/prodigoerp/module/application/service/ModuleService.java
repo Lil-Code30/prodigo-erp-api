@@ -108,6 +108,7 @@ public class ModuleService implements TenantModuleSubCreateUseCase, ModuleCreate
         Instant now = Instant.now();
 
         newModule.setId(null);
+        newModule.setDescription(registerModuleCommand.description());
         newModule.setModuleKey(registerModuleCommand.moduleKey().toUpperCase());
         newModule.setName(registerModuleCommand.name());
         newModule.setPrice(registerModuleCommand.price());

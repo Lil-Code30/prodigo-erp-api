@@ -27,6 +27,11 @@ public class ModuleJpaEntity {
 
     @Size(max = 255)
     @NotNull
+    @Column(name = "description", nullable = true, length = 255)
+    private String description;
+
+    @Size(max = 20)
+    @NotNull
     @Column(name = "module_key", nullable = false)
     private String moduleKey;
 

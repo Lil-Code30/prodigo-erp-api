@@ -9,6 +9,7 @@ import java.util.List;
 
 public record RegisterModuleCommand(
         String name,
+        String description,
         String moduleKey,
         BigDecimal price,
         List<CreatePermissionCommand> createPermissions

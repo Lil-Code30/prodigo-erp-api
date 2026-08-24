@@ -36,6 +36,7 @@ public class ModuleLookUpService implements ModuleLookUpUseCase, AllPublicModule
             showPublicModuleCommandList.add(new ShowPublicModuleCommand(
                     module.getId(),
                     module.getName(),
+                    module.getDescription(),
                     module.getModuleKey(),
                     module.getPrice(),
                     module.getCurrency()

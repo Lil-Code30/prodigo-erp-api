@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public record ShowPublicModuleCommand(
          Long id,
          String name,
+         String description,
          String moduleKey,
          BigDecimal price,
          String currency

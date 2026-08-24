@@ -11,6 +11,7 @@ public class Module {
 
     private Long id;
     private String name;
+    private String description;
     private String moduleKey;
     private BigDecimal price;
     private String currency;
