@@ -3,6 +3,10 @@ package com.licode.prodigoerp.auth.adapter.input.rest.controller;
 
 import com.licode.prodigoerp.auth.adapter.input.rest.dto.AuthResponseDto;
 import com.licode.prodigoerp.auth.adapter.input.rest.dto.LoginRequestDto;
+import com.licode.prodigoerp.auth.adapter.input.rest.dto.RefreshResponseDto;
+import com.licode.prodigoerp.auth.adapter.input.rest.mapper.AuthWebMapper;
+import com.licode.prodigoerp.auth.application.port.input.RefreshTokenUseCase;
+import com.licode.prodigoerp.auth.application.port.input.command.RefreshResponseCommand;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
 import com.licode.prodigoerp.auth.application.port.output.TokenGeneratorPort;
@@ -18,10 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -36,9 +37,12 @@ public class AuthController {
     private final LoadUserPort loadUserPort;
     private final RefreshTokenStorePort refreshTokenStorePort;
     private final TokenGeneratorPort tokenGeneratorPort;
+    private final RefreshTokenUseCase refreshTokenUseCase;
+    private final AuthWebMapper authWebMapper;
 
     @PostMapping(value = "/login", version = "1.0")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
+
         // TODO: Need to find a way to refactor the login to follow the Hexagonal Archi
         // Since most of the login logic is handle by spring security
         // I don't want to make these logics in service to avoid complete coupling with spring security
@@ -82,8 +86,26 @@ public class AuthController {
                 HttpHeaders.SET_COOKIE, responseCookie.toString()
         ).body(
                 new AuthResponseDto(
-                     user.get().getId(), tenantSlug, accessToken, refreshToken.getToken()
+                     user.get().getId(), tenantSlug, accessToken
                 )
+        );
+    }
+
+    @GetMapping(value = "/refresh", version = "1.0")
+    public ResponseEntity<RefreshResponseDto> refresh(@CookieValue("refresh_token") String refreshToken) {
+
+        RefreshResponseCommand refreshResponse = refreshTokenUseCase.refreshToken(refreshToken);
+
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshResponse.refreshToken())
+                .httpOnly(true)
+                .path("/")
+                .secure(true)
+                .maxAge(Duration.ofDays(14))
+                .sameSite("strict")
+                .build();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(
+            authWebMapper.toRefreshResponseDto(refreshResponse)
         );
     }
 }
