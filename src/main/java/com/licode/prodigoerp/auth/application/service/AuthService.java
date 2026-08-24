@@ -66,4 +66,9 @@ public class AuthService implements RefreshTokenUseCase {
       );
     }
 
+    @Override
+    public void logout(String token) {
+        refreshTokenStorePort.revokeRefreshTokenByTokenString(token);
+    }
+
 }

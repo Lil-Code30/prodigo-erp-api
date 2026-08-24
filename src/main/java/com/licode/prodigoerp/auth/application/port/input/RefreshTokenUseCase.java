@@ -4,4 +4,5 @@ import com.licode.prodigoerp.auth.application.port.input.command.RefreshResponse
 
 public interface RefreshTokenUseCase {
     RefreshResponseCommand refreshToken(String refreshToken);
+    void logout(String token);
 }

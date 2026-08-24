@@ -22,6 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -107,5 +108,25 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(
             authWebMapper.toRefreshResponseDto(refreshResponse)
         );
+    }
+
+    @GetMapping(value = "/logout", version = "1.0")
+    public ResponseEntity<Void> logout(@CookieValue("refresh_token") String refreshToken) {
+
+        refreshTokenUseCase.logout(refreshToken);
+
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", null)
+                .httpOnly(true)
+                .path("/")
+                .secure(true)
+                .maxAge(0)
+                .sameSite("strict")
+                .build();
+
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).build();
+
     }
 }
