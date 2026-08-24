@@ -9,6 +9,7 @@ public class ModuleJpaMapper {
 
         module.setId(moduleJpaEntity.getId());
         module.setName(moduleJpaEntity.getName());
+        module.setModuleKey(moduleJpaEntity.getModuleKey());
         module.setDescription(moduleJpaEntity.getDescription());
         module.setPrice(moduleJpaEntity.getPrice());
         module.setCurrency(moduleJpaEntity.getCurrency());
@@ -27,6 +28,7 @@ public class ModuleJpaMapper {
 
         moduleJpaEntity.setId(module.getId());
         moduleJpaEntity.setName(module.getName());
+        moduleJpaEntity.setModuleKey(module.getModuleKey());
         moduleJpaEntity.setDescription(module.getDescription());
         moduleJpaEntity.setPrice(module.getPrice());
         moduleJpaEntity.setCurrency(module.getCurrency());

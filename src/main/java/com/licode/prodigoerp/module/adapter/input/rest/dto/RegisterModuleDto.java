@@ -11,9 +11,9 @@ import java.util.List;
 
 public record RegisterModuleDto(
         @NotBlank @Size(max = 150) String name,
-        @NotBlank @Size(max = 20) String moduleKey,
         @NotBlank @Size(max = 255) String description,
+        @NotBlank @Size(max = 20) String moduleKey,
         @NotNull BigDecimal price,
-        @NotNull @Valid List<CreatePermissionDto> createPermissionDtos
+        @NotNull @Valid List<CreatePermissionDto> createPermissions
 ) {
 }

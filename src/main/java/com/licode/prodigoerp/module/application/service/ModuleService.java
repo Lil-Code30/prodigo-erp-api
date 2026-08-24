@@ -17,6 +17,7 @@ import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -37,6 +38,7 @@ public class ModuleService implements TenantModuleSubCreateUseCase, ModuleCreate
     private final SaveModulePort saveModulePort;
 
     @Override
+    @Transactional
     public Map<String, Module> createTenantModuleSubscription(Long tenantId, List<SelectedModuleCommand> selectedModuleCommands) {
 
         // TODO : need to fetch the person connected
@@ -94,6 +96,7 @@ public class ModuleService implements TenantModuleSubCreateUseCase, ModuleCreate
     }
 
     @Override
+    @Transactional
     public Module createModule(RegisterModuleCommand registerModuleCommand) {
 
         // check if there is already a Module with the moduleKey provided
@@ -119,11 +122,14 @@ public class ModuleService implements TenantModuleSubCreateUseCase, ModuleCreate
         newModule.setCreatedBy(actor);
         newModule.setUpdatedBy(actor);
 
+        Module createdModule = saveModulePort.saveModule(newModule);
 
         // We need to generate all permissions for the module created
         registerModuleCommand.createPermissions()
-                .forEach(saveAuthoritiesUseCase::savePermission);
+                .forEach(createdPermission -> {
+                    saveAuthoritiesUseCase.savePermission(createdPermission, actor);
+                });
 
-        return saveModulePort.saveModule(newModule);
+        return createdModule;
     }
 }
