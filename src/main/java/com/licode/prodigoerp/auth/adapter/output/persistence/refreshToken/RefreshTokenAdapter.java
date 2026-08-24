@@ -57,7 +57,9 @@ public class RefreshTokenAdapter implements RefreshTokenStorePort {
         refreshTokenJpaEntity.setExpiryDate(Instant.now().plusSeconds(refreshExpirationMs));
         refreshTokenJpaEntity.setCreatedAt(Instant.now());
 
-        return RefreshTokenJpaMapper.toDomainModel(refreshTokenJpaEntity);
+        RefreshTokenJpaEntity createJpaRefreshToken = jpaRefreshTokenRepository.save(refreshTokenJpaEntity);
+
+        return RefreshTokenJpaMapper.toDomainModel(createJpaRefreshToken);
     }
 
     @Override

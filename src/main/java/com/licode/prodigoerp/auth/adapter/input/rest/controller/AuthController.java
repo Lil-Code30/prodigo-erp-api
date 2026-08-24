@@ -23,6 +23,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -40,6 +41,7 @@ public class AuthController {
     private final TokenGeneratorPort tokenGeneratorPort;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final AuthWebMapper authWebMapper;
+    private final UserDetailsService  userDetailsService;
 
     @PostMapping(value = "/login", version = "1.0")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto){

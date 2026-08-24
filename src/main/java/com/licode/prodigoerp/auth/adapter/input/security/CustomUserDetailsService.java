@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -24,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
    private final RoleQueryPort roleQueryPort;
 
     @Override
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 
         User user = loadUserPort.findUserByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found with username: " + username));
@@ -46,6 +47,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new UserPrincipal(user, authorities);
     }
-
 
 }

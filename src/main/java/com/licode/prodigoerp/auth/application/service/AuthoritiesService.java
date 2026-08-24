@@ -16,6 +16,7 @@ import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     private final RoleQueryPort roleQueryPort;
 
     @Override
+    @Transactional
     public Role saveRole(CreateRoleCommand roleCommand) {
 
         Role role = new Role();
@@ -53,6 +55,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     }
 
     @Override
+    @Transactional
     public void assignedRoleToUser(AssignRoleCommand assignRoleCommand) {
 
         UserRole userRole = new UserRole();
@@ -85,6 +88,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     }
 
     @Override
+    @Transactional
     public Permission savePermission(CreatePermissionCommand permissionCommand, String author) {
         Permission permission = new Permission();
         Instant now = Instant.now();
@@ -115,6 +119,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     }
 
     @Override
+    @Transactional
     public void assignedPermissionToRole(Long permissionId, AssignRoleCommand assignRoleCommand) {
 
         RolePermission rolePermission = new RolePermission();
@@ -136,6 +141,8 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         rolePermission.setRole(role.get());
         rolePermission.setGrantedAt(Instant.now());
         rolePermission.setGrantedBy(assignRoleCommand.assignBy());
+
+        savePermissionPort.assignPermissionToRole(rolePermission);
     }
 
 
