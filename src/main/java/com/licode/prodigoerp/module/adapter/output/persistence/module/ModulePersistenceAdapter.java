@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,6 +21,13 @@ public class ModulePersistenceAdapter implements ModuleQueryPort, SaveModulePort
         Optional<ModuleJpaEntity> moduleJpaEntity = jpaModuleRepository.findModuleByModuleKey(moduleKey);
 
         return moduleJpaEntity.map(ModuleJpaMapper::toDomainModel);
+    }
+
+    @Override
+    public List<Module> findAllActivePublicModules() {
+        List<ModuleJpaEntity> moduleJpaEntityList = jpaModuleRepository.findAllActiveModuleJpaEntities();
+
+        return moduleJpaEntityList.stream().map(ModuleJpaMapper::toDomainModel).toList();
     }
 
     @Override
