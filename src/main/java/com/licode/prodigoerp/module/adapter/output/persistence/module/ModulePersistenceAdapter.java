@@ -1,15 +1,17 @@
 package com.licode.prodigoerp.module.adapter.output.persistence.module;
 
-import com.licode.prodigoerp.module.application.port.output.ModuleQueryRepositoryPort;
+import com.licode.prodigoerp.module.application.port.output.ModuleQueryPort;
+import com.licode.prodigoerp.module.application.port.output.SaveModulePort;
 import com.licode.prodigoerp.module.domain.model.Module;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class ModuleQueryAdapter implements ModuleQueryRepositoryPort {
+public class ModulePersistenceAdapter implements ModuleQueryPort, SaveModulePort {
 
     private final JpaModuleRepository jpaModuleRepository;
 
@@ -18,5 +20,13 @@ public class ModuleQueryAdapter implements ModuleQueryRepositoryPort {
         Optional<ModuleJpaEntity> moduleJpaEntity = jpaModuleRepository.findModuleByModuleKey(moduleKey);
 
         return moduleJpaEntity.map(ModuleJpaMapper::toDomainModel);
+    }
+
+    @Override
+    @Transactional
+    public Module saveModule(Module module) {
+        ModuleJpaEntity moduleJpaEntity = jpaModuleRepository.save(ModuleJpaMapper.toJpaEntity(module));
+
+        return ModuleJpaMapper.toDomainModel(moduleJpaEntity);
     }
 }

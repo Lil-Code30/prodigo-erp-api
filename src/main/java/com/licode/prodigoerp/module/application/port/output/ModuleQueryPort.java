@@ -4,7 +4,7 @@ import com.licode.prodigoerp.module.domain.model.Module;
 
 import java.util.Optional;
 
-public interface ModuleQueryRepositoryPort {
+public interface ModuleQueryPort {
 
     Optional<Module> findModuleByModuleKey(String moduleKey);
 }

@@ -1,11 +1,17 @@
 package com.licode.prodigoerp.module.application.service;
 
-import com.licode.prodigoerp.auth.domain.exception.NotFoundException;
+import com.licode.prodigoerp.auth.application.port.input.SaveAuthoritiesUseCase;
+import com.licode.prodigoerp.common.exception.ConflictException;
+import com.licode.prodigoerp.common.exception.NotFoundException;
+import com.licode.prodigoerp.module.application.port.input.ModuleCreateUseCase;
 import com.licode.prodigoerp.module.application.port.input.ModuleLookUpUseCase;
 import com.licode.prodigoerp.module.application.port.input.ModuleSubscriptionUseCase;
 import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
-import com.licode.prodigoerp.module.domain.command.CreateModuleSubCommand;
-import com.licode.prodigoerp.module.domain.command.SelectedModuleCommand;
+import com.licode.prodigoerp.module.application.port.input.command.CreateModuleSubCommand;
+import com.licode.prodigoerp.module.application.port.input.command.RegisterModuleCommand;
+import com.licode.prodigoerp.module.application.port.input.command.SelectedModuleCommand;
+import com.licode.prodigoerp.module.application.port.output.ModuleQueryPort;
+import com.licode.prodigoerp.module.application.port.output.SaveModulePort;
 import com.licode.prodigoerp.module.domain.model.Module;
 import com.licode.prodigoerp.tenant.application.port.input.TenantLookUpUseCase;
 import com.licode.prodigoerp.tenant.domain.model.Tenant;
@@ -13,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +27,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ModuleService implements TenantModuleSubCreateUseCase {
+public class ModuleService implements TenantModuleSubCreateUseCase, ModuleCreateUseCase {
 
     private final ModuleLookUpUseCase moduleLookUpUseCase;
     private final TenantLookUpUseCase tenantLookUpUseCase;
     private final ModuleSubscriptionUseCase moduleSubscriptionUseCase;
+    private final SaveAuthoritiesUseCase saveAuthoritiesUseCase;
+    private final ModuleQueryPort moduleQueryPort;
+    private final SaveModulePort saveModulePort;
 
     @Override
     public Map<String, Module> createTenantModuleSubscription(Long tenantId, List<SelectedModuleCommand> selectedModuleCommands) {
@@ -81,5 +91,38 @@ public class ModuleService implements TenantModuleSubCreateUseCase {
         });
 
         return allModuleSubscriptions;
+    }
+
+    @Override
+    public Module createModule(RegisterModuleCommand registerModuleCommand) {
+
+        // check if there is already a Module with the moduleKey provided
+        if(moduleQueryPort.findModuleByModuleKey(registerModuleCommand.moduleKey().toUpperCase()).isPresent()){
+            throw new ConflictException("Module already exists with this key: " + registerModuleCommand.moduleKey());
+        }
+
+        //  Here we check if there is a superAdmin connected or else we take the system default name
+        String actor = "PRODIGO_ERP_API"; // TODO : need to check this with securityUtils
+
+        Module newModule = new Module();
+        Instant now = Instant.now();
+
+        newModule.setId(null);
+        newModule.setModuleKey(registerModuleCommand.moduleKey().toUpperCase());
+        newModule.setName(registerModuleCommand.name());
+        newModule.setPrice(registerModuleCommand.price());
+        newModule.setCurrency("XAF");
+        newModule.setIsActive(true);
+        newModule.setCreatedAt(now);
+        newModule.setUpdatedAt(now);
+        newModule.setCreatedBy(actor);
+        newModule.setUpdatedBy(actor);
+
+
+        // We need to generate all permissions for the module created
+        registerModuleCommand.createPermissions()
+                .forEach(saveAuthoritiesUseCase::savePermission);
+
+        return saveModulePort.saveModule(newModule);
     }
 }
