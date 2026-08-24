@@ -10,6 +10,6 @@ public record AuthResponseDto(
         String accessToken,
         String refreshToken
 //        Collection<? extends GrantedAuthority> authorities
-        // TODO need to pass this to the controller
+        // TODO Find a way to pass this to the controller both (register and login)
 ) {
 }
