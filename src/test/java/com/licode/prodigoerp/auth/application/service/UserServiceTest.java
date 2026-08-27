@@ -145,12 +145,30 @@ class UserServiceTest {
                 .thenReturn(tenant);
         when(tenantEntitlementUseCase.createDefaultTenantEntitlement(tenant))
                 .thenReturn(tenantEntitlement);
-        when(tenantModuleSubCreateUseCase.createTenantModuleSubscription(tenant.getId(),registerUserCommand.selectedModules()))
+        when(tenantModuleSubCreateUseCase.createTenantModuleSubscription(eq(tenant.getId()),eq(registerUserCommand.selectedModules())))
                 .thenReturn(subscriptions);
-        when(saveAuthoritiesUseCase.savePermission(any(CreatePermissionCommand.class), ACTOR))
+        when(saveAuthoritiesUseCase.savePermission(any(CreatePermissionCommand.class), eq(ACTOR)))
                 .thenReturn(new Permission());
         when(refreshTokenStorePort.createRefreshToken(user)).thenReturn(refreshToken);
         when(tokenGeneratorPort.generateAccessToken(user)).thenReturn("access-token-value");
+
+        // When
+
+        AuthResponseCommand response = userService.register(registerUserCommand);
+
+        // then : the response reflects what the mocked collaborators returned
+        verify(createTenantUseCase).create(any(CreateTenantCommand.class));
+        verify(tenantEntitlementUseCase).createDefaultTenantEntitlement(tenant);
+        verify(saveUserUseCase).save(any(CreateUserCommand.class), eq(ACTOR));
+        verify(saveAuthoritiesUseCase).saveRole(any(CreateRoleCommand.class));
+        verify(saveAuthoritiesUseCase).assignedRoleToUser(any(AssignRoleCommand.class));
+
+        verify(saveAuthoritiesUseCase, times(subscriptions.size()))
+                .savePermission(any(CreatePermissionCommand.class), eq(ACTOR));
+        verify(saveAuthoritiesUseCase, times(subscriptions.size()))
+                .assignedPermissionToRole(any(), any(AssignRoleCommand.class));
+        verify(refreshTokenStorePort).createRefreshToken(user);
+        verify(tokenGeneratorPort).generateAccessToken(user);
     }
 
 }
