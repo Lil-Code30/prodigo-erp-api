@@ -184,4 +184,36 @@ class UserServiceTest {
         verify(saveUserUseCase, never()).save(any(), any());
     }
 
+    @Test
+    @DisplayName("Rejects registration when the email already exists")
+    void shouldThrowConflictWhenEmailAlreadyExists() {
+        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                .thenReturn(Optional.empty());
+        when(loadUserPort.findUserByEmail(registerUserCommand.email()))
+                .thenReturn(Optional.of(user));
+
+        ConflictException ex = assertThrows(ConflictException.class,
+                () -> userService.register(registerUserCommand));
+
+        assertEquals("Email already exists", ex.getMessage());
+        verify(createTenantUseCase, never()).create(any());
+    }
+
+    @Test
+    @DisplayName("Rejects registration when the company slug already exists")
+    void shouldThrowConflictWhenCompanySlugAlreadyExists() {
+        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                .thenReturn(Optional.empty());
+        when(loadUserPort.findUserByEmail(registerUserCommand.email()))
+                .thenReturn(Optional.empty());
+        when(tenantLookUpUseCase.existsBySlug(registerUserCommand.companySlug()))
+                .thenReturn(true);
+
+        ConflictException ex = assertThrows(ConflictException.class,
+                () -> userService.register(registerUserCommand));
+
+        assertEquals("Company Name already exists", ex.getMessage());
+        verify(createTenantUseCase, never()).create(any());
+    }
+
 }
