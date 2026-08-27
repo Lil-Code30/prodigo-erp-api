@@ -27,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,6 +168,20 @@ class UserServiceTest {
                 .assignedPermissionToRole(any(), any(AssignRoleCommand.class));
         verify(refreshTokenStorePort).createRefreshToken(user);
         verify(tokenGeneratorPort).generateAccessToken(user);
+    }
+
+    @Test
+    @DisplayName("Rejects registration when the username already exists")
+    void shouldRejectRegistrationWhenUsernameAlreadyExists() {
+        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                .thenReturn(Optional.of(user));
+
+        ConflictException ex = assertThrows(ConflictException.class,
+                () -> userService.register(registerUserCommand));
+
+        assertEquals("Username already exists", ex.getMessage());
+        verify(createTenantUseCase, never()).create(any());
+        verify(saveUserUseCase, never()).save(any(), any());
     }
 
 }
