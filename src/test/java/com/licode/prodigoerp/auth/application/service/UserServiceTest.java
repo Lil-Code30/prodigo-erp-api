@@ -22,6 +22,7 @@ import com.licode.prodigoerp.tenant.domain.model.Tenant;
 import com.licode.prodigoerp.tenant.domain.model.TenantEntitlement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -130,90 +131,93 @@ class UserServiceTest {
         subscriptions.put("Inventory", inventory);
     }
 
-    @Test
-    @DisplayName("Happy path: create tenant, user, admin role, permissions and return tokens")
-    void shouldRegisterUSerSuccessfully() {
-        // Given
-        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
-                .thenReturn(Optional.empty());
-        when(loadUserPort.findUserByEmail(registerUserCommand.email()))
-                .thenReturn(Optional.empty());
-        when(tenantLookUpUseCase.existsBySlug(registerUserCommand.companySlug()))
-                .thenReturn(false);
-        when(createTenantUseCase.create(any(CreateTenantCommand.class)))
-                .thenReturn(tenant);
-        when(tenantEntitlementUseCase.createDefaultTenantEntitlement(tenant))
-                .thenReturn(tenantEntitlement);
-        when(tenantModuleSubCreateUseCase.createTenantModuleSubscription(eq(tenant.getId()),eq(registerUserCommand.selectedModules())))
-                .thenReturn(subscriptions);
-        when(saveAuthoritiesUseCase.savePermission(any(CreatePermissionCommand.class), eq(ACTOR)))
-                .thenReturn(new Permission());
-        when(refreshTokenStorePort.createRefreshToken(user)).thenReturn(refreshToken);
-        when(tokenGeneratorPort.generateAccessToken(user)).thenReturn("access-token-value");
+    @Nested
+    @DisplayName("register user test")
+    class RegisterUser{
+        @Test
+        @DisplayName("Happy path: create tenant, user, admin role, permissions and return tokens")
+        void shouldRegisterUserSuccessfully() {
+            // Given
+            when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                    .thenReturn(Optional.empty());
+            when(loadUserPort.findUserByEmail(registerUserCommand.email()))
+                    .thenReturn(Optional.empty());
+            when(tenantLookUpUseCase.existsBySlug(registerUserCommand.companySlug()))
+                    .thenReturn(false);
+            when(createTenantUseCase.create(any(CreateTenantCommand.class)))
+                    .thenReturn(tenant);
+            when(tenantEntitlementUseCase.createDefaultTenantEntitlement(tenant))
+                    .thenReturn(tenantEntitlement);
+            when(tenantModuleSubCreateUseCase.createTenantModuleSubscription(eq(tenant.getId()),eq(registerUserCommand.selectedModules())))
+                    .thenReturn(subscriptions);
+            when(saveAuthoritiesUseCase.savePermission(any(CreatePermissionCommand.class), eq(ACTOR)))
+                    .thenReturn(new Permission());
+            when(refreshTokenStorePort.createRefreshToken(user)).thenReturn(refreshToken);
+            when(tokenGeneratorPort.generateAccessToken(user)).thenReturn("access-token-value");
 
-        // When
+            // When
 
-        AuthResponseCommand response = userService.register(registerUserCommand);
+            AuthResponseCommand response = userService.register(registerUserCommand);
 
-        // then : the response reflects what the mocked collaborators returned
-        verify(createTenantUseCase).create(any(CreateTenantCommand.class));
-        verify(tenantEntitlementUseCase).createDefaultTenantEntitlement(tenant);
-        verify(saveUserUseCase).save(any(CreateUserCommand.class), eq(ACTOR));
-        verify(saveAuthoritiesUseCase).saveRole(any(CreateRoleCommand.class));
-        verify(saveAuthoritiesUseCase).assignedRoleToUser(any(AssignRoleCommand.class));
+            // then : the response reflects what the mocked collaborators returned
+            verify(createTenantUseCase).create(any(CreateTenantCommand.class));
+            verify(tenantEntitlementUseCase).createDefaultTenantEntitlement(tenant);
+            verify(saveUserUseCase).save(any(CreateUserCommand.class), eq(ACTOR));
+            verify(saveAuthoritiesUseCase).saveRole(any(CreateRoleCommand.class));
+            verify(saveAuthoritiesUseCase).assignedRoleToUser(any(AssignRoleCommand.class));
 
-        verify(saveAuthoritiesUseCase, times(subscriptions.size()))
-                .savePermission(any(CreatePermissionCommand.class), eq(ACTOR));
-        verify(saveAuthoritiesUseCase, times(subscriptions.size()))
-                .assignedPermissionToRole(any(), any(AssignRoleCommand.class));
-        verify(refreshTokenStorePort).createRefreshToken(user);
-        verify(tokenGeneratorPort).generateAccessToken(user);
+            verify(saveAuthoritiesUseCase, times(subscriptions.size()))
+                    .savePermission(any(CreatePermissionCommand.class), eq(ACTOR));
+            verify(saveAuthoritiesUseCase, times(subscriptions.size()))
+                    .assignedPermissionToRole(any(), any(AssignRoleCommand.class));
+            verify(refreshTokenStorePort).createRefreshToken(user);
+            verify(tokenGeneratorPort).generateAccessToken(user);
+        }
+
+        @Test
+        @DisplayName("Rejects registration when the username already exists")
+        void shouldRejectRegistrationWhenUsernameAlreadyExists() {
+            when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                    .thenReturn(Optional.of(user));
+
+            ConflictException ex = assertThrows(ConflictException.class,
+                    () -> userService.register(registerUserCommand));
+
+            assertEquals("Username already exists", ex.getMessage());
+            verify(createTenantUseCase, never()).create(any());
+            verify(saveUserUseCase, never()).save(any(), any());
+        }
+
+        @Test
+        @DisplayName("Rejects registration when the email already exists")
+        void shouldThrowConflictWhenEmailAlreadyExists() {
+            when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                    .thenReturn(Optional.empty());
+            when(loadUserPort.findUserByEmail(registerUserCommand.email()))
+                    .thenReturn(Optional.of(user));
+
+            ConflictException ex = assertThrows(ConflictException.class,
+                    () -> userService.register(registerUserCommand));
+
+            assertEquals("Email already exists", ex.getMessage());
+            verify(createTenantUseCase, never()).create(any());
+        }
+
+        @Test
+        @DisplayName("Rejects registration when the company slug already exists")
+        void shouldThrowConflictWhenCompanySlugAlreadyExists() {
+            when(loadUserPort.findUserByUsername(registerUserCommand.username()))
+                    .thenReturn(Optional.empty());
+            when(loadUserPort.findUserByEmail(registerUserCommand.email()))
+                    .thenReturn(Optional.empty());
+            when(tenantLookUpUseCase.existsBySlug(registerUserCommand.companySlug()))
+                    .thenReturn(true);
+
+            ConflictException ex = assertThrows(ConflictException.class,
+                    () -> userService.register(registerUserCommand));
+
+            assertEquals("Company Name already exists", ex.getMessage());
+            verify(createTenantUseCase, never()).create(any());
+        }
     }
-
-    @Test
-    @DisplayName("Rejects registration when the username already exists")
-    void shouldRejectRegistrationWhenUsernameAlreadyExists() {
-        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
-                .thenReturn(Optional.of(user));
-
-        ConflictException ex = assertThrows(ConflictException.class,
-                () -> userService.register(registerUserCommand));
-
-        assertEquals("Username already exists", ex.getMessage());
-        verify(createTenantUseCase, never()).create(any());
-        verify(saveUserUseCase, never()).save(any(), any());
-    }
-
-    @Test
-    @DisplayName("Rejects registration when the email already exists")
-    void shouldThrowConflictWhenEmailAlreadyExists() {
-        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
-                .thenReturn(Optional.empty());
-        when(loadUserPort.findUserByEmail(registerUserCommand.email()))
-                .thenReturn(Optional.of(user));
-
-        ConflictException ex = assertThrows(ConflictException.class,
-                () -> userService.register(registerUserCommand));
-
-        assertEquals("Email already exists", ex.getMessage());
-        verify(createTenantUseCase, never()).create(any());
-    }
-
-    @Test
-    @DisplayName("Rejects registration when the company slug already exists")
-    void shouldThrowConflictWhenCompanySlugAlreadyExists() {
-        when(loadUserPort.findUserByUsername(registerUserCommand.username()))
-                .thenReturn(Optional.empty());
-        when(loadUserPort.findUserByEmail(registerUserCommand.email()))
-                .thenReturn(Optional.empty());
-        when(tenantLookUpUseCase.existsBySlug(registerUserCommand.companySlug()))
-                .thenReturn(true);
-
-        ConflictException ex = assertThrows(ConflictException.class,
-                () -> userService.register(registerUserCommand));
-
-        assertEquals("Company Name already exists", ex.getMessage());
-        verify(createTenantUseCase, never()).create(any());
-    }
-
 }
