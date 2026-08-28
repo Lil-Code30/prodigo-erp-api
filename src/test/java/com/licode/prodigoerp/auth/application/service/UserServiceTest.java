@@ -172,6 +172,9 @@ class UserServiceTest {
                     .assignedPermissionToRole(any(), any(AssignRoleCommand.class));
             verify(refreshTokenStorePort).createRefreshToken(user);
             verify(tokenGeneratorPort).generateAccessToken(user);
+
+            verify(createTenantUseCase).create(argThat(tenant -> tenant.companySlug().equals(registerUserCommand.companySlug())));
+            verify(saveUserUseCase).save(argThat(user -> user.tenant().getId().equals(1L)),  eq(ACTOR));
         }
 
         @Test
@@ -184,8 +187,10 @@ class UserServiceTest {
                     () -> userService.register(registerUserCommand));
 
             assertEquals("Username already exists", ex.getMessage());
-            verify(createTenantUseCase, never()).create(any());
-            verify(saveUserUseCase, never()).save(any(), any());
+//            verify(createTenantUseCase, never()).create(any());
+            verifyNoMoreInteractions(createTenantUseCase);
+//            verify(saveUserUseCase, never()).save(any(), any());
+            verifyNoInteractions(saveUserUseCase);
         }
 
         @Test
@@ -200,7 +205,8 @@ class UserServiceTest {
                     () -> userService.register(registerUserCommand));
 
             assertEquals("Email already exists", ex.getMessage());
-            verify(createTenantUseCase, never()).create(any());
+//            verify(createTenantUseCase, never()).create(any());
+            verifyNoMoreInteractions(createTenantUseCase);
         }
 
         @Test
@@ -217,7 +223,8 @@ class UserServiceTest {
                     () -> userService.register(registerUserCommand));
 
             assertEquals("Company Name already exists", ex.getMessage());
-            verify(createTenantUseCase, never()).create(any());
+//            verify(createTenantUseCase, never()).create(any());
+            verifyNoMoreInteractions(createTenantUseCase);
         }
     }
 }
