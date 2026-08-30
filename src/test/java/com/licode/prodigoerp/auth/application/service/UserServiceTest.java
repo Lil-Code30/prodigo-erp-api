@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,7 +53,15 @@ class UserServiceTest {
 
     private UserService userService;  // what we want to test
 
-    private static final String ACTOR = "PRODIGO_EPR_API";
+    private static final String ACTOR = "PRODIGO_ERP_API";
+
+    // Fixed UUIDs (not random) so assertions stay deterministic and easy to read/debug
+    private static final UUID TENANT_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    private static final UUID TENANT_ENTITLEMENT_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+    private static final UUID USER_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
+    private static final UUID ADMIN_ROLE_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
+    private static final UUID CRM_MODULE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
+    private static final UUID INVENTORY_MODULE_ID = UUID.fromString("66666666-6666-6666-6666-666666666666");
 
     private RegisterUserCommand registerUserCommand;
     private Tenant tenant;
@@ -86,29 +95,29 @@ class UserServiceTest {
                 "Ismael",
                 "Loko",
                 List.of(
-                        new SelectedModuleCommand(1L, "CRM", "CRM"),
-                        new SelectedModuleCommand(2L, "Inventory", "INVENTORY")
+                        new SelectedModuleCommand(CRM_MODULE_ID, "CRM", "CRM"),
+                        new SelectedModuleCommand(INVENTORY_MODULE_ID, "Inventory", "INVENTORY")
                 )
         );
 
         tenant = new Tenant();
-        tenant.setId(1L);
+        tenant.setId(TENANT_ID);
         tenant.setName(registerUserCommand.companyName());
         tenant.setSlug(registerUserCommand.companySlug());
         tenant.setCountry(registerUserCommand.country());
 
         tenantEntitlement = new TenantEntitlement();
-        tenantEntitlement.setId(1L);
+        tenantEntitlement.setId(TENANT_ENTITLEMENT_ID);
         tenantEntitlement.setTenant(tenant);
 
         user = new User();
-        user.setId(10L);
+        user.setId(USER_ID);
         user.setUsername(registerUserCommand.username());
         user.setEmail(registerUserCommand.email());
         user.setTenant(tenant);
 
         adminRole = new Role();
-        adminRole.setId(100L);
+        adminRole.setId(ADMIN_ROLE_ID);
         adminRole.setName("ADMIN");
         adminRole.setTenant(tenant);
 
@@ -117,12 +126,12 @@ class UserServiceTest {
         refreshToken.setUser(user);
 
         Module crm = new Module();
-        crm.setId(1L);
+        crm.setId(CRM_MODULE_ID);
         crm.setName("CRM");
         crm.setModuleKey("CRM");
 
         Module inventory = new Module();
-        inventory.setId(2L);
+        inventory.setId(INVENTORY_MODULE_ID);
         inventory.setName("Inventory");
         inventory.setModuleKey("INVENTORY");
 
@@ -150,8 +159,12 @@ class UserServiceTest {
                     .thenReturn(tenantEntitlement);
             when(tenantModuleSubCreateUseCase.createTenantModuleSubscription(eq(tenant.getId()),eq(registerUserCommand.selectedModules())))
                     .thenReturn(subscriptions);
+            when(saveUserUseCase.save(any(CreateUserCommand.class), eq(ACTOR)))
+                    .thenReturn(user);
             when(saveAuthoritiesUseCase.savePermission(any(CreatePermissionCommand.class), eq(ACTOR)))
                     .thenReturn(new Permission());
+            when(saveAuthoritiesUseCase.saveRole(any(CreateRoleCommand.class)))
+                    .thenReturn(adminRole);
             when(refreshTokenStorePort.createRefreshToken(user)).thenReturn(refreshToken);
             when(tokenGeneratorPort.generateAccessToken(user)).thenReturn("access-token-value");
 
@@ -174,7 +187,7 @@ class UserServiceTest {
             verify(tokenGeneratorPort).generateAccessToken(user);
 
             verify(createTenantUseCase).create(argThat(tenant -> tenant.companySlug().equals(registerUserCommand.companySlug())));
-            verify(saveUserUseCase).save(argThat(user -> user.tenant().getId().equals(1L)),  eq(ACTOR));
+            verify(saveUserUseCase).save(argThat(user -> user.tenant().getId().equals(TENANT_ID)),  eq(ACTOR));
         }
 
         @Test
