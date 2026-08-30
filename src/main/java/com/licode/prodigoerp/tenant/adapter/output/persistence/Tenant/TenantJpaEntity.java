@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -16,6 +17,8 @@ import java.util.UUID;
 @Table(name = "tenants")
 public class TenantJpaEntity {
     @Id
+    @GeneratedValue
+    @UuidGenerator
     @Column(name = "id", nullable = false,  updatable = false)
     private UUID id;
 
