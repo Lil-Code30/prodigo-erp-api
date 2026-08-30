@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,9 +20,8 @@ import java.time.Instant;
 @Table(name = "user_roles")
 public class UserRoleJpaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "id", nullable = false,   updatable = false)
+    private UUID id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -36,7 +36,7 @@ public class UserRoleJpaEntity {
     private RoleJpaEntity roleJpaEntity;
 
     @Column(name = "tenant_id")
-    private Long tenantId;
+    private UUID tenantId;
 
     @Size(max = 100)
     @NotNull

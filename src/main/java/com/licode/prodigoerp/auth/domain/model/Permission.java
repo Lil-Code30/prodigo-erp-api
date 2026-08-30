@@ -6,11 +6,12 @@ import lombok.Data;
 
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 public class Permission {
 
-    private Long id;
+    private UUID id;
     private String code;
     private String description;
     private String action;

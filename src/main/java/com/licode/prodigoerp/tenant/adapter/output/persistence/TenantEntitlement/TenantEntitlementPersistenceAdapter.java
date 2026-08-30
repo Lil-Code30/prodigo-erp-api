@@ -17,8 +17,8 @@ public class TenantEntitlementPersistenceAdapter implements TenantEntitlementCre
     @Override
     @Transactional
     public TenantEntitlement createDefaultTenantEntitlement(TenantEntitlement tenantEntitlement) {
-        TenantJpaEntitlement tenantJpaEntitlement = jpaTenantEntitlementRepository.save(TenantEntitlementJpaMapper.toDbCreateTenantEntitlement(tenantEntitlement));
+        TenantEntitlementJpaEntity tenantEntitlementJpaEntity = jpaTenantEntitlementRepository.save(TenantEntitlementJpaMapper.toDbCreateTenantEntitlement(tenantEntitlement));
 
-        return TenantEntitlementJpaMapper.toDomainModel(tenantJpaEntitlement);
+        return TenantEntitlementJpaMapper.toDomainModel(tenantEntitlementJpaEntity);
     }
 }

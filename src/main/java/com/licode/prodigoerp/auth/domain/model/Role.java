@@ -4,11 +4,12 @@ import com.licode.prodigoerp.tenant.domain.model.Tenant;
 
 import lombok.Data;
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 public class Role {
 
-    private Long id;
+    private UUID id;
     private Tenant tenant;
     private String name;
     private String description;

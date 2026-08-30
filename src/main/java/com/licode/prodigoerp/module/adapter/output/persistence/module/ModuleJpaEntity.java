@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,9 +17,8 @@ import java.time.Instant;
 @Table(name = "modules")
 public class ModuleJpaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "id", nullable = false,  updatable = false)
+    private UUID id;
 
     @Size(max = 150)
     @NotNull

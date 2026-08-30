@@ -4,14 +4,15 @@ import lombok.Data;
 
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 public class UserRole {
 
-    private Long id;
+    private UUID id;
     private User user;
     private Role role;
-    private Long tenantId;
+    private UUID tenantId;
     private String assignedBy;
     private Instant assignedAt;
     private Instant expiresAt;

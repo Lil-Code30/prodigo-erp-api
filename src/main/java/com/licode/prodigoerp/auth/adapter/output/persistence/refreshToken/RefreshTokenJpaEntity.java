@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,9 +18,8 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 public class RefreshTokenJpaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "id", nullable = false,  updatable = false)
+    private UUID id;
 
     @NotNull
     @Column(name = "token", nullable = false, length = Integer.MAX_VALUE)

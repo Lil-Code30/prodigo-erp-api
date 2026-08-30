@@ -1,55 +1,54 @@
 package com.licode.prodigoerp.tenant.adapter.output.persistence.TenantEntitlement;
 
-import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantJpaEntity;
 import com.licode.prodigoerp.tenant.adapter.output.persistence.Tenant.TenantJpaMapper;
 import com.licode.prodigoerp.tenant.domain.model.TenantEntitlement;
 
 public class TenantEntitlementJpaMapper {
 
-    public static TenantJpaEntitlement toDbCreateTenantEntitlement(TenantEntitlement tenantEntitlement) {
-        TenantJpaEntitlement tenantJpaEntitlement = new TenantJpaEntitlement();
+    public static TenantEntitlementJpaEntity toDbCreateTenantEntitlement(TenantEntitlement tenantEntitlement) {
+        TenantEntitlementJpaEntity tenantEntitlementJpaEntity = new TenantEntitlementJpaEntity();
 
-        tenantJpaEntitlement.setId(null);
-        tenantJpaEntitlement.setTenantJpaEntity(TenantJpaMapper.toJpaEntity(tenantEntitlement.getTenant()));
-        tenantJpaEntitlement.setMaxUsers(tenantEntitlement.getMaxUsers());
-        tenantJpaEntitlement.setMaxStorageGb(tenantEntitlement.getMaxStorageGb());
-        tenantJpaEntitlement.setMaxProducts(tenantEntitlement.getMaxProducts());
-        tenantJpaEntitlement.setCreatedAt(tenantEntitlement.getCreatedAt());
-        tenantJpaEntitlement.setUpdatedAt(tenantEntitlement.getUpdatedAt());
-        tenantJpaEntitlement.setCreatedBy(tenantEntitlement.getCreatedBy());
-        tenantJpaEntitlement.setUpdatedBy(tenantEntitlement.getUpdatedBy());
+        tenantEntitlementJpaEntity.setId(null);
+        tenantEntitlementJpaEntity.setTenantJpaEntity(TenantJpaMapper.toJpaEntity(tenantEntitlement.getTenant()));
+        tenantEntitlementJpaEntity.setMaxUsers(tenantEntitlement.getMaxUsers());
+        tenantEntitlementJpaEntity.setMaxStorageGb(tenantEntitlement.getMaxStorageGb());
+        tenantEntitlementJpaEntity.setMaxProducts(tenantEntitlement.getMaxProducts());
+        tenantEntitlementJpaEntity.setCreatedAt(tenantEntitlement.getCreatedAt());
+        tenantEntitlementJpaEntity.setUpdatedAt(tenantEntitlement.getUpdatedAt());
+        tenantEntitlementJpaEntity.setCreatedBy(tenantEntitlement.getCreatedBy());
+        tenantEntitlementJpaEntity.setUpdatedBy(tenantEntitlement.getUpdatedBy());
 
-        return tenantJpaEntitlement;
+        return tenantEntitlementJpaEntity;
     }
 
-    public static TenantJpaEntitlement toJpaEntity(TenantEntitlement tenantEntitlement) {
-        TenantJpaEntitlement tenantJpaEntitlement = new TenantJpaEntitlement();
+    public static TenantEntitlementJpaEntity toJpaEntity(TenantEntitlement tenantEntitlement) {
+        TenantEntitlementJpaEntity tenantEntitlementJpaEntity = new TenantEntitlementJpaEntity();
 
-        tenantJpaEntitlement.setId(tenantEntitlement.getId());
-        tenantJpaEntitlement.setTenantJpaEntity(TenantJpaMapper.toJpaEntity(tenantEntitlement.getTenant()));
-        tenantJpaEntitlement.setMaxUsers(tenantEntitlement.getMaxUsers());
-        tenantJpaEntitlement.setMaxStorageGb(tenantEntitlement.getMaxStorageGb());
-        tenantJpaEntitlement.setMaxProducts(tenantEntitlement.getMaxProducts());
-        tenantJpaEntitlement.setCreatedAt(tenantEntitlement.getCreatedAt());
-        tenantJpaEntitlement.setUpdatedAt(tenantEntitlement.getUpdatedAt());
-        tenantJpaEntitlement.setCreatedBy(tenantEntitlement.getCreatedBy());
-        tenantJpaEntitlement.setUpdatedBy(tenantEntitlement.getUpdatedBy());
+        tenantEntitlementJpaEntity.setId(tenantEntitlement.getId());
+        tenantEntitlementJpaEntity.setTenantJpaEntity(TenantJpaMapper.toJpaEntity(tenantEntitlement.getTenant()));
+        tenantEntitlementJpaEntity.setMaxUsers(tenantEntitlement.getMaxUsers());
+        tenantEntitlementJpaEntity.setMaxStorageGb(tenantEntitlement.getMaxStorageGb());
+        tenantEntitlementJpaEntity.setMaxProducts(tenantEntitlement.getMaxProducts());
+        tenantEntitlementJpaEntity.setCreatedAt(tenantEntitlement.getCreatedAt());
+        tenantEntitlementJpaEntity.setUpdatedAt(tenantEntitlement.getUpdatedAt());
+        tenantEntitlementJpaEntity.setCreatedBy(tenantEntitlement.getCreatedBy());
+        tenantEntitlementJpaEntity.setUpdatedBy(tenantEntitlement.getUpdatedBy());
 
-        return tenantJpaEntitlement;
+        return tenantEntitlementJpaEntity;
     }
 
-    public static TenantEntitlement toDomainModel(TenantJpaEntitlement tenantJpaEntitlement) {
+    public static TenantEntitlement toDomainModel(TenantEntitlementJpaEntity tenantEntitlementJpaEntity) {
         TenantEntitlement tenantEntitlement = new TenantEntitlement();
 
-        tenantEntitlement.setId(tenantJpaEntitlement.getId());
-        tenantEntitlement.setTenant(TenantJpaMapper.toDomainModel(tenantJpaEntitlement.getTenantJpaEntity()));
-        tenantEntitlement.setMaxUsers(tenantJpaEntitlement.getMaxUsers());
-        tenantEntitlement.setMaxStorageGb(tenantJpaEntitlement.getMaxStorageGb());
-        tenantEntitlement.setMaxProducts(tenantJpaEntitlement.getMaxProducts());
-        tenantEntitlement.setCreatedAt(tenantJpaEntitlement.getCreatedAt());
-        tenantEntitlement.setUpdatedAt(tenantJpaEntitlement.getUpdatedAt());
-        tenantEntitlement.setCreatedBy(tenantJpaEntitlement.getCreatedBy());
-        tenantEntitlement.setUpdatedBy(tenantJpaEntitlement.getUpdatedBy());
+        tenantEntitlement.setId(tenantEntitlementJpaEntity.getId());
+        tenantEntitlement.setTenant(TenantJpaMapper.toDomainModel(tenantEntitlementJpaEntity.getTenantJpaEntity()));
+        tenantEntitlement.setMaxUsers(tenantEntitlementJpaEntity.getMaxUsers());
+        tenantEntitlement.setMaxStorageGb(tenantEntitlementJpaEntity.getMaxStorageGb());
+        tenantEntitlement.setMaxProducts(tenantEntitlementJpaEntity.getMaxProducts());
+        tenantEntitlement.setCreatedAt(tenantEntitlementJpaEntity.getCreatedAt());
+        tenantEntitlement.setUpdatedAt(tenantEntitlementJpaEntity.getUpdatedAt());
+        tenantEntitlement.setCreatedBy(tenantEntitlementJpaEntity.getCreatedBy());
+        tenantEntitlement.setUpdatedBy(tenantEntitlementJpaEntity.getUpdatedBy());
 
         return tenantEntitlement;
     }
