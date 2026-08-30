@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS "modules" (
     "id" UUID NOT NULL PRIMARY KEY ,
     "name" VARCHAR(150) NOT NULL UNIQUE,
     "module_key" VARCHAR(255) NOT NULL UNIQUE,
+    "description" VARCHAR(255),
     "price" DECIMAL(10, 2) NOT NULL DEFAULT 0,
     "currency" VARCHAR(3) NOT NULL DEFAULT 'XAF',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
