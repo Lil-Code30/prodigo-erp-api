@@ -4,8 +4,9 @@ import com.licode.prodigoerp.auth.adapter.output.persistence.Authority.entity.Pe
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface JpaPermissionRepository extends JpaRepository<PermissionJpaEntity, Long> {
+public interface JpaPermissionRepository extends JpaRepository<PermissionJpaEntity, UUID> {
 
-    Optional<PermissionJpaEntity> findPermissionJpaEntityById(Long permissionId);
+    Optional<PermissionJpaEntity> findPermissionJpaEntityById(UUID permissionId);
 }

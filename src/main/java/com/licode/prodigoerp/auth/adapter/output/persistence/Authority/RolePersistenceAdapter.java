@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -53,7 +54,7 @@ public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort, Save
     }
 
     @Override
-    public Optional<Permission> findPermissionById(Long permissionId) {
+    public Optional<Permission> findPermissionById(UUID permissionId) {
        Optional<PermissionJpaEntity> permissionJpaEntity = jpaPermissionRepository
                .findPermissionJpaEntityById(permissionId);
 

@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface JpaTenantRepository extends JpaRepository<TenantJpaEntity, Long> {
+public interface JpaTenantRepository extends JpaRepository<TenantJpaEntity, UUID> {
 
     boolean existsBySlug(String slug);
     Optional<TenantJpaEntity> findBySlug(String slug);

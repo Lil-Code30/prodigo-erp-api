@@ -2,5 +2,7 @@ package com.licode.prodigoerp.tenant.adapter.output.persistence.TenantEntitlemen
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaTenantEntitlementRepository extends JpaRepository<TenantEntitlementJpaEntity, Long> {
+import java.util.UUID;
+
+public interface JpaTenantEntitlementRepository extends JpaRepository<TenantEntitlementJpaEntity, UUID> {
 }

@@ -6,15 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface JpaUserRoleRepository extends JpaRepository<UserRoleJpaEntity, Long> {
+public interface JpaUserRoleRepository extends JpaRepository<UserRoleJpaEntity, UUID> {
 
     @Query("""
         SELECT r.name FROM UserRoleJpaEntity ur JOIN ur.roleJpaEntity r
         WHERE ur.userJpaEntity.id = :userId
         AND (ur.expiresAt IS NULL OR ur.expiresAt > CURRENT_TIMESTAMP)
         """)
-    List<String> findActiveRoleNamesByUserId(@Param("userId") Long userId);
+    List<String> findActiveRoleNamesByUserId(@Param("userId") UUID userId);
 
     @Query("""
         SELECT DISTINCT p.code FROM UserRoleJpaEntity ur
@@ -24,5 +25,5 @@ public interface JpaUserRoleRepository extends JpaRepository<UserRoleJpaEntity, 
         WHERE ur.userJpaEntity.id = :userId
         AND (ur.expiresAt IS NULL OR ur.expiresAt > CURRENT_TIMESTAMP)
         """)
-    List<String> findActivePermissionCodesByUserId(@Param("userId") Long userId);
+    List<String> findActivePermissionCodesByUserId(@Param("userId") UUID userId);
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -18,6 +19,8 @@ import java.util.UUID;
 @Table(name = "role_permissions")
 public class RolePermissionJpaEntity {
     @Id
+    @GeneratedValue
+    @UuidGenerator
     @Column(name = "id", nullable = false,  updatable = false)
     private UUID id;
 
