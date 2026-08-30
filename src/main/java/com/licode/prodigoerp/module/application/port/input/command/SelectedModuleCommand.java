@@ -1,7 +1,9 @@
 package com.licode.prodigoerp.module.application.port.input.command;
 
+import java.util.UUID;
+
 public record SelectedModuleCommand(
-        Long moduleId,
+        UUID moduleId,
         String moduleName,
         String moduleKey
 ) {

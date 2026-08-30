@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public class TenantQueryAdapter implements TenantQueryPort {
     private final JpaTenantRepository jpaTenantRepository;
 
     @Override
-    public Optional<Tenant> findTenantById(Long id) {
+    public Optional<Tenant> findTenantById(UUID id) {
         Optional<TenantJpaEntity> tenantJpaEntity = jpaTenantRepository.findById(id);
 
        return tenantJpaEntity.map(TenantJpaMapper::toDomainModel);

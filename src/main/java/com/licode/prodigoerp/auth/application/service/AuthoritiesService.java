@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -120,7 +121,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
 
     @Override
     @Transactional
-    public void assignedPermissionToRole(Long permissionId, AssignRoleCommand assignRoleCommand) {
+    public void assignedPermissionToRole(UUID permissionId, AssignRoleCommand assignRoleCommand) {
 
         RolePermission rolePermission = new RolePermission();
         rolePermission.setId(null);

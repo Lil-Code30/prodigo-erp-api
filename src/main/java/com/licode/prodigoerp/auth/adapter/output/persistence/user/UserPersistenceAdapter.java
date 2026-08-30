@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class UserPersistenceAdapter implements SaveUserPort, LoadUserPort {
     }
 
     @Override
-    public Optional<User> findUserById(Long id) {
+    public Optional<User> findUserById(UUID id) {
         return jpaUserRepository.findById(id).map(UserJpaMapper::toDomainModel);
     }
 

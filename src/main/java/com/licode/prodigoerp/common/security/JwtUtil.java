@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -43,8 +44,8 @@ public class JwtUtil {
      * Generate Access Token
      */
     public String generateAccessToken(
-            Long userId, String username, String email,
-            Long tenantId, String tenantSlug,
+            UUID userId, String username, String email,
+            UUID tenantId, String tenantSlug,
             List<String> roles, List<String> permissions
     ) {
 

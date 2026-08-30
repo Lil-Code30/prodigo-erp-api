@@ -1,10 +1,12 @@
 package com.licode.prodigoerp.auth.application.port.input.command;
 
 
+import java.util.UUID;
+
 public record AssignRoleCommand(
-        Long userId,
-        Long roleId,
-        Long tenantId,
+        UUID userId,
+        UUID roleId,
+        UUID tenantId,
         String assignBy
 ) {
 }

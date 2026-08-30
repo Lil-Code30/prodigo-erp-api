@@ -5,8 +5,9 @@ import com.licode.prodigoerp.module.domain.model.Module;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface TenantModuleSubCreateUseCase {
 
-    Map<String, Module> createTenantModuleSubscription(Long tenantId, List<SelectedModuleCommand> selectedModuleCommands);
+    Map<String, Module> createTenantModuleSubscription(UUID tenantId, List<SelectedModuleCommand> selectedModuleCommands);
 }

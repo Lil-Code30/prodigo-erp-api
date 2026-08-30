@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class TenantLookUpService implements TenantLookUpUseCase {
     }
 
     @Override
-    public Tenant findTenantById(Long tenantId) {
+    public Tenant findTenantById(UUID tenantId) {
         Optional<Tenant> tenant = tenantQueryPort.findTenantById(tenantId);
 
         if(tenant.isEmpty()){

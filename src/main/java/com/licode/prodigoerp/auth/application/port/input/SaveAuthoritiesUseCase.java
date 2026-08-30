@@ -6,10 +6,12 @@ import com.licode.prodigoerp.auth.application.port.input.command.CreateRoleComma
 import com.licode.prodigoerp.auth.domain.model.Permission;
 import com.licode.prodigoerp.auth.domain.model.Role;
 
+import java.util.UUID;
+
 public interface SaveAuthoritiesUseCase {
 
     Role saveRole(CreateRoleCommand roleCommand);
     void assignedRoleToUser(AssignRoleCommand assignRoleCommand);
     Permission  savePermission(CreatePermissionCommand permissionCommand, String author);
-    void assignedPermissionToRole(Long permissionId, AssignRoleCommand assignRoleCommand);
+    void assignedPermissionToRole(UUID permissionId, AssignRoleCommand assignRoleCommand);
 }

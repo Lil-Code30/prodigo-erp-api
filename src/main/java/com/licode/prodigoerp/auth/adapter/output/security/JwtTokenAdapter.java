@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Component
@@ -24,7 +25,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
         List<String> roles = roleQueryPort.findActiveRoleNames(user.getId());
         List<String> permissions = roleQueryPort.findActivePermissionCodes(user.getId());
 
-        Long tenantId = user.getTenant() != null ? user.getTenant().getId() : null;
+        UUID tenantId = user.getTenant() != null ? user.getTenant().getId() : null;
         String tenantSlug = user.getTenant() != null ? user.getTenant().getSlug() : null;
 
         return jwtUtil.generateAccessToken(

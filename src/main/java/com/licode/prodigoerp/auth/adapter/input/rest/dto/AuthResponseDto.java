@@ -3,9 +3,10 @@ package com.licode.prodigoerp.auth.adapter.input.rest.dto;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public record AuthResponseDto(
-        Long userId,
+        UUID userId,
         String tenantSlug,
         String accessToken
 //        Collection<? extends GrantedAuthority> authorities

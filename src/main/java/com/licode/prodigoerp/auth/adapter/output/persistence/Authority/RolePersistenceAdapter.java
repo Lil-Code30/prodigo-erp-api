@@ -36,18 +36,18 @@ public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort, Save
     final private JpaRolePermissionRepository jpaRolePermissionRepository;
 
     @Override
-    public List<String> findActiveRoleNames(Long userId) {
+    public List<String> findActiveRoleNames(UUID userId) {
 
         return jpaUserRoleRepository.findActiveRoleNamesByUserId(userId);
     }
 
     @Override
-    public List<String> findActivePermissionCodes(Long userId) {
+    public List<String> findActivePermissionCodes(UUID userId) {
         return jpaUserRoleRepository.findActivePermissionCodesByUserId(userId);
     }
 
     @Override
-    public Optional<Role> findRoleByIdAndTenantId(Long roleId, Long tenantId) {
+    public Optional<Role> findRoleByIdAndTenantId(UUID roleId, UUID tenantId) {
         Optional<RoleJpaEntity> roleJpaEntity =  jpaRoleRepository.findRoleJpaEntitiesByIdAndTenantJpaEntity_Id(roleId, tenantId);
 
         return roleJpaEntity.map(RoleJpaMapper::toDomainModel);

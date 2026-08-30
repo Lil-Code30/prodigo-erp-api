@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class RefreshTokenAdapter implements RefreshTokenStorePort {
     }
 
     @Override
-    public Optional<RefreshToken> findRefreshTokenByUser_Id(Long userId) {
+    public Optional<RefreshToken> findRefreshTokenByUser_Id(UUID userId) {
         Optional<RefreshTokenJpaEntity> refreshTokenJpaEntity = jpaRefreshTokenRepository.findByUserJpaEntity_Id(userId);
 
         return refreshTokenJpaEntity.map(RefreshTokenJpaMapper::toDomainModel);
