@@ -6,6 +6,7 @@ import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
 import com.licode.prodigoerp.auth.application.port.input.command.*;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RefreshTokenStorePort;
+import com.licode.prodigoerp.auth.application.port.output.RoleQueryPort;
 import com.licode.prodigoerp.auth.application.port.output.TokenGeneratorPort;
 import com.licode.prodigoerp.auth.domain.model.Permission;
 import com.licode.prodigoerp.auth.domain.model.RefreshToken;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -38,6 +40,7 @@ public class UserService implements RegisterUserUseCase {
     private final SaveUserUseCase saveUserUseCase;
     private final SaveAuthoritiesUseCase saveAuthoritiesUseCase;
     private final TokenGeneratorPort  tokenGeneratorPort;
+    private final RoleQueryPort roleQueryPort;
 
 
 
@@ -150,11 +153,17 @@ public class UserService implements RegisterUserUseCase {
         RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
         String accessToken = tokenGeneratorPort.generateAccessToken(fetchedUser);
 
+        // TODO: Load the user roles and permissions here
+        List<String> roles = roleQueryPort.findActiveRoleNames(fetchedUser.getId());
+        List<String> permissions = roleQueryPort.findActivePermissionCodes(fetchedUser.getId());
+
         return new AuthResponseCommand(
                 fetchedUser.getId(),
                 createdTenant.getSlug(),
                 accessToken,
-                refreshToken.getToken()
+                refreshToken.getToken(),
+                roles,
+                permissions
         );
     }
 }

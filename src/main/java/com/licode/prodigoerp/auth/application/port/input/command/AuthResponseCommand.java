@@ -7,6 +7,8 @@ public record AuthResponseCommand(
         UUID userId,
         String tenantSlug,
         String accessToken,
-        String refreshToken
+        String refreshToken,
+        List<String> roles,
+        List<String> permissions
 ) {
 }
