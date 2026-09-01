@@ -62,6 +62,13 @@ public class RolePersistenceAdapter implements RoleQueryPort, SaveRolePort, Save
     }
 
     @Override
+    public Optional<Permission> findPermissionByCode(String code) {
+        Optional<PermissionJpaEntity> permissionJpaEntity = jpaPermissionRepository.findPermissionJpaEntityByCode(code);
+
+        return permissionJpaEntity.map(PermissionJpaMapper::toDomainModel);
+    }
+
+    @Override
     @Transactional
     public Role saveRole(Role role) {
         RoleJpaEntity roleJpaEntity = jpaRoleRepository.save(

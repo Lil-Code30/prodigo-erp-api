@@ -26,11 +26,6 @@ public class UserJpaMapper {
         return userJpaEntity;
     }
 
-    // TODO :
-    public static User toDbCreateUser(){
-        return new User();
-    }
-
     public static User toDomainModel(UserJpaEntity userJpaEntity) {
         User user = new User();
         user.setId(userJpaEntity.getId());

@@ -94,7 +94,8 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         Permission permission = new Permission();
         Instant now = Instant.now();
 
-        // Permission sample : CRM_CUSTOMER_CREATE
+        // Permission sample : CRM.CUSTOMER.CREATE, CRM.MODULE.CRUD
+        // Permission format : ModuleKey.Ressource.Action
         String permissionCode = permissionCommand.moduleKey() + "." + permissionCommand.resource() + "." + permissionCommand.action();
 
         // We got the module key, then we need to fetch the whole Module object to create the associate permission

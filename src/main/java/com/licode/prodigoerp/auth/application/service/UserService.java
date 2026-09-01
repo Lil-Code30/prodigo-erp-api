@@ -13,6 +13,7 @@ import com.licode.prodigoerp.auth.domain.model.RefreshToken;
 import com.licode.prodigoerp.auth.domain.model.Role;
 import com.licode.prodigoerp.common.exception.ConflictException;
 import com.licode.prodigoerp.auth.domain.model.User;
+import com.licode.prodigoerp.common.exception.NotFoundException;
 import com.licode.prodigoerp.module.application.port.input.TenantModuleSubCreateUseCase;
 import com.licode.prodigoerp.module.domain.model.Module;
 import com.licode.prodigoerp.tenant.application.port.input.CreateTenantUseCase;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +104,7 @@ public class UserService implements RegisterUserUseCase {
 
 
         // here is the Admin role ( for the company (tenant) creating the account)
+        // there will be duplicate ADMIN roles here but diff Tenant TODO : need
         Role adminRole = saveAuthoritiesUseCase.saveRole(
                 new CreateRoleCommand(
                         "ADMIN",
@@ -122,24 +125,24 @@ public class UserService implements RegisterUserUseCase {
                 )
         );
 
-        // we need to create permission/module for the role created :
+        // we need to assign the full access permissions (depending on the to the user
         //NOTE: since this will be the endpoint for the Tenant Admin creation,
-        // he/she will have all the permissions i.e. module_CRUD (e.x: CRM_CRUD or INVOICE_CRUD)
-        // This is taking the module key as the resource + the action which is the CRUD
+        // he/she will have all the permissions i.e. ModuleKey.Resource.CRUD (e.x: CRM.CRM.CRUD or INVOICE.INVOICE_CRUD)
+
         subscriptions.forEach((key, value) -> {
 
-            CreatePermissionCommand createPermissionCommand = new CreatePermissionCommand(
-                    "Complete (FULL) Access to the " + value.getName() + " Module",
-                    key,
-                    "CRUD",
-                    value.getModuleKey()
-            );
+            // we need assign the full access permission of all the modules to the role
+            // NOTE: we only get the full access permission code (key.MODULE.CRUD) nothing else
+            String permissionString = key + "." + "MODULE" + "." + "CRUD";
+            Optional<Permission> permission = roleQueryPort.findPermissionByCode(permissionString);
 
-            Permission permission = saveAuthoritiesUseCase.savePermission(createPermissionCommand, author);
+            if(permission.isEmpty()) {
+                throw new NotFoundException("Permission with code " + permissionString + " not found");
+            }
 
-            // For every permission created, we should assign the permission to that role
+
             saveAuthoritiesUseCase.assignedPermissionToRole(
-                    permission.getId(),
+                    permission.get().getId(),
                     new AssignRoleCommand(
                            fetchedUser.getId(),
                            adminRole.getId(),
@@ -153,7 +156,6 @@ public class UserService implements RegisterUserUseCase {
         RefreshToken refreshToken = refreshTokenStorePort.createRefreshToken(fetchedUser);
         String accessToken = tokenGeneratorPort.generateAccessToken(fetchedUser);
 
-        // TODO: Load the user roles and permissions here
         List<String> roles = roleQueryPort.findActiveRoleNames(fetchedUser.getId());
         List<String> permissions = roleQueryPort.findActivePermissionCodes(fetchedUser.getId());
 

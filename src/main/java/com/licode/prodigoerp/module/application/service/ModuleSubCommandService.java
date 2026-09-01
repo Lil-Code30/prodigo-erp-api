@@ -30,7 +30,7 @@ public class ModuleSubCommandService implements ModuleSubscriptionUseCase {
         moduleSubscription.setStatus("ACTIVE");
         moduleSubscription.setIsFree(createModuleSubCommand.isFree());
 
-        // TODO: Currency and pric need to depend on the Country of the user
+        // TODO: Currency and price need to depend on the Country of the user
         moduleSubscription.setPrice(createModuleSubCommand.price());
         moduleSubscription.setCurrency(createModuleSubCommand.currency());
 
