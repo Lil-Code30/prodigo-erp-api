@@ -14,7 +14,7 @@ public class UserJpaMapper {
         userJpaEntity.setEmail(user.getEmail());
         userJpaEntity.setFirstName(user.getFirstName());
         userJpaEntity.setLastName(user.getLastName());
-        userJpaEntity.setTenant(TenantJpaMapper.toJpaEntity(user.getTenant()));
+        userJpaEntity.setTenant(user.getTenant() == null ? null : TenantJpaMapper.toJpaEntity(user.getTenant()));
         userJpaEntity.setStatus(user.getStatus());
         userJpaEntity.setIsSuperAdmin(user.getIsSuperAdmin());
         userJpaEntity.setLastLogin(user.getLastLogin());
@@ -34,7 +34,7 @@ public class UserJpaMapper {
         user.setEmail(userJpaEntity.getEmail());
         user.setFirstName(userJpaEntity.getFirstName());
         user.setLastName(userJpaEntity.getLastName());
-        user.setTenant(TenantJpaMapper.toDomainModel(userJpaEntity.getTenant()));
+        user.setTenant(userJpaEntity.getTenant() == null ? null : TenantJpaMapper.toDomainModel(userJpaEntity.getTenant()));
         user.setStatus(userJpaEntity.getStatus());
         user.setIsSuperAdmin(userJpaEntity.getIsSuperAdmin());
         user.setLastLogin(userJpaEntity.getLastLogin());

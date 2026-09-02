@@ -10,7 +10,7 @@ public class RoleJpaMapper {
         RoleJpaEntity roleJpaEntity = new RoleJpaEntity();
 
         roleJpaEntity.setId(role.getId());
-        roleJpaEntity.setTenantJpaEntity(TenantJpaMapper.toJpaEntity(role.getTenant()));
+        roleJpaEntity.setTenantJpaEntity(role.getTenant() == null ? null : TenantJpaMapper.toJpaEntity(role.getTenant()));
         roleJpaEntity.setName(role.getName());
         roleJpaEntity.setDescription(role.getDescription());
         roleJpaEntity.setIsDefault(role.getIsDefault());
@@ -26,7 +26,7 @@ public class RoleJpaMapper {
         Role role = new Role();
 
         role.setId(roleJpaEntity.getId());
-        role.setTenant(TenantJpaMapper.toDomainModel(roleJpaEntity.getTenantJpaEntity()));
+        role.setTenant(role.getTenant() == null ? null : TenantJpaMapper.toDomainModel(roleJpaEntity.getTenantJpaEntity()));
         role.setName(roleJpaEntity.getName());
         role.setDescription(roleJpaEntity.getDescription());
         role.setIsDefault(roleJpaEntity.getIsDefault());

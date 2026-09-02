@@ -40,10 +40,6 @@ public class UserController {
                 .sameSite("strict")
                 .build();
 
-        // Loading the user role and permissions
-      // TODO : where to load the role/permissions ( Service or controller)
-
-
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(
                authWebMapper.toAuthResponseDto(authResponseCommand)
         );

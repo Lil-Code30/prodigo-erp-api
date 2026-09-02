@@ -7,25 +7,6 @@ import java.time.Instant;
 
 public class TenantJpaMapper {
 
-    public static TenantJpaEntity toDbCreateTenant(RegisterTenantDto registerTenantDto) {
-        TenantJpaEntity tenantJpaEntity = new TenantJpaEntity();
-
-        Instant instant = Instant.now();
-
-        tenantJpaEntity.setId(null);
-        tenantJpaEntity.setSlug(registerTenantDto.companySlug());
-        tenantJpaEntity.setName(registerTenantDto.companyName());
-        tenantJpaEntity.setCountry(registerTenantDto.country());
-        tenantJpaEntity.setStatus("ACTIVE");
-        tenantJpaEntity.setCreatedAt(instant);
-        tenantJpaEntity.setUpdatedAt(instant);
-        tenantJpaEntity.setCreatedBy("PRODIGO_ERP_API");
-        tenantJpaEntity.setUpdatedBy("PRODIGO_ERP_API");
-
-        return tenantJpaEntity;
-
-    }
-
     public static TenantJpaEntity toJpaEntity(Tenant  tenant) {
         TenantJpaEntity tenantJpaEntity = new TenantJpaEntity();
 

@@ -14,6 +14,7 @@ public interface RoleQueryPort {
     List<String> findActivePermissionCodes(UUID userId);
     Optional<Role> findRoleByIdAndTenantId(UUID roleId, UUID tenantId);
     Optional<Role> findRoleByNameWithTenantNull(String roleName);
+    Optional<Role> findRoleByIdWithTenantNull(UUID roleId);
     Optional<Permission> findPermissionById(UUID permissionId);
     Optional<Permission> findPermissionByCode(String code);
 }

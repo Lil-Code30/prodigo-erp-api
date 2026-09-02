@@ -74,7 +74,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
 
         if(assignRoleCommand.tenantId() == null){
             tenantId = null;
-            role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.userId(), null);
+            role = roleQueryPort.findRoleByIdWithTenantNull(assignRoleCommand.roleId());
         }else {
             tenant = tenantLookUpUseCase.findTenantById(assignRoleCommand.tenantId());
             tenantId = tenant.getId();

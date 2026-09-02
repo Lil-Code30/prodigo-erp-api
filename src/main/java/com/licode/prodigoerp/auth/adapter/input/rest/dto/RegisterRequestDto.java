@@ -1,16 +1,19 @@
 package com.licode.prodigoerp.auth.adapter.input.rest.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.List;
 
 public record RegisterRequestDto(
-        String companyName,
-        String companySlug,
-        String country,
-        String username,
-        String email,
-        String password,
-        String firstName,
-        String lastName,
+        @NotBlank String companyName,
+        @NotBlank String companySlug,
+        @NotBlank String country,
+        @NotBlank String username,
+        @NotBlank @Email String email,
+        @NotBlank String password,
+        @NotBlank String firstName,
+        @NotBlank String lastName,
         List<RegisterSelectedModuleDto> selectedModules
 ) {
 }
