@@ -62,15 +62,24 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         UserRole userRole = new UserRole();
 
         userRole.setId(null);
+        Optional<Role> role;
+        Tenant tenant;
+        UUID tenantId;
 
-        Tenant tenant = tenantLookUpUseCase.findTenantById(assignRoleCommand.tenantId());
         Optional<User> user = loadUserPort.findUserById(assignRoleCommand.userId());
 
         if (user.isEmpty()) {
             throw new NotFoundException("User not found with id: " + assignRoleCommand.userId());
         }
 
-        Optional<Role> role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.roleId(), tenant.getId());
+        if(assignRoleCommand.tenantId() == null){
+            tenantId = null;
+            role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.userId(), null);
+        }else {
+            tenant = tenantLookUpUseCase.findTenantById(assignRoleCommand.tenantId());
+            tenantId = tenant.getId();
+            role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.roleId(), tenant.getId());
+        }
 
         if (role.isEmpty()) {
             throw new NotFoundException("Role not found with id: " + assignRoleCommand.roleId());
@@ -80,7 +89,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
 
         userRole.setRole(role.get());
         userRole.setUser(user.get());
-        userRole.setTenantId(tenant.getId());
+        userRole.setTenantId(tenantId);
         userRole.setAssignedAt(now);
         userRole.setAssignedBy(assignRoleCommand.assignBy());
         userRole.setExpiresAt(now.plusSeconds(315576000)); // TODO (to be refactor) expires in 10 years

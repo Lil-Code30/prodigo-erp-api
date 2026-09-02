@@ -32,7 +32,7 @@ public class SaveUserService implements SaveUserUseCase {
         createdUser.setFirstName(command.firstName());
         createdUser.setLastName(command.lastName());
         createdUser.setStatus("ACTIVE");
-        createdUser.setIsSuperAdmin(false);
+        createdUser.setIsSuperAdmin(command.isSuperAdmin());
 
         createdUser.setLastLogin(now);
         createdUser.setCreatedAt(now);
