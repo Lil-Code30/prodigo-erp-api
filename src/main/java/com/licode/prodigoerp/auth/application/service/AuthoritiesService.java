@@ -102,16 +102,34 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
     public Permission savePermission(CreatePermissionCommand permissionCommand, String author) {
         Permission permission = new Permission();
         Instant now = Instant.now();
+        Module module;
+        String permissionCode;
 
-        // Permission sample : CRM.CUSTOMER.CREATE, CRM.MODULE.CRUD
-        // Permission format : ModuleKey.Ressource.Action
-        String permissionCode = permissionCommand.moduleKey() + "." + permissionCommand.resource() + "." + permissionCommand.action();
 
-        // We got the module key, then we need to fetch the whole Module object to create the associate permission
-        Optional<Module> module = moduleLookUpUseCase.findModuleByModuleKey(permissionCommand.moduleKey());
+        // moduleKey can be null since the System permission is not associated to any module
+        // it can happen that a super admin permission are associated just to a module
+        // meaning the super admin is just responsible for that specific module management
+        if(permissionCommand.moduleKey() == null){
+            // system permission samples: ERP.SYSTEM.ACCESS, ERP.SYSTEM.READ, ERP.CRM.UPDATE
+            // ERP is the key word for al the super admin permission
+            // System Permission format : ERP.Resouce.Action (Ex: READ, UPDATE...)
+            permissionCode = "ERP" + "." + permissionCommand.resource() + "." + permissionCommand.action();
 
-        if (module.isEmpty()) {
-            throw  new NotFoundException("Module with key " + permissionCommand.moduleKey() +" not found - Permission create");
+            module = null;
+
+        }else{
+            // Permission sample : CRM.CUSTOMER.CREATE, CRM.MODULE.CRUD
+            // Permission format : ModuleKey.Ressource.Action
+            permissionCode = permissionCommand.moduleKey() + "." + permissionCommand.resource() + "." + permissionCommand.action();
+
+            // We got the module key, then we need to fetch the whole Module object to create the associate permission
+            Optional<Module> fetchedModule = moduleLookUpUseCase.findModuleByModuleKey(permissionCommand.moduleKey());
+
+            if (fetchedModule.isEmpty()) {
+                throw  new NotFoundException("Module with key " + permissionCommand.moduleKey() +" not found - Permission create");
+            }
+
+            module = fetchedModule.get();
         }
 
         permission.setId(null);
@@ -119,7 +137,7 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         permission.setDescription(permissionCommand.description());
         permission.setAction(permissionCommand.action());
         permission.setResource(permissionCommand.resource());
-        permission.setModule(module.get());
+        permission.setModule(module);
 
         permission.setCreatedAt(now);
         permission.setUpdatedAt(now);
@@ -136,7 +154,13 @@ public class AuthoritiesService implements SaveAuthoritiesUseCase {
         RolePermission rolePermission = new RolePermission();
         rolePermission.setId(null);
 
-        Optional<Role> role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.roleId(), assignRoleCommand.tenantId());
+        Optional<Role> role;
+
+        if(assignRoleCommand.tenantId() == null){
+            role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.roleId(), null);
+        }else{
+            role = roleQueryPort.findRoleByIdAndTenantId(assignRoleCommand.roleId(), assignRoleCommand.tenantId());
+        }
 
         if (role.isEmpty()) {
             throw new NotFoundException("Role not found with id: " + assignRoleCommand.roleId());

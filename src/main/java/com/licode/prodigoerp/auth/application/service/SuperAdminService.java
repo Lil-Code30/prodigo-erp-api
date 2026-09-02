@@ -3,10 +3,7 @@ package com.licode.prodigoerp.auth.application.service;
 import com.licode.prodigoerp.auth.application.port.input.RegisterSuperAdminUseCase;
 import com.licode.prodigoerp.auth.application.port.input.SaveAuthoritiesUseCase;
 import com.licode.prodigoerp.auth.application.port.input.SaveUserUseCase;
-import com.licode.prodigoerp.auth.application.port.input.command.AssignRoleCommand;
-import com.licode.prodigoerp.auth.application.port.input.command.CreateRoleCommand;
-import com.licode.prodigoerp.auth.application.port.input.command.CreateUserCommand;
-import com.licode.prodigoerp.auth.application.port.input.command.RegisterSuperAdminCommand;
+import com.licode.prodigoerp.auth.application.port.input.command.*;
 import com.licode.prodigoerp.auth.application.port.output.LoadUserPort;
 import com.licode.prodigoerp.auth.application.port.output.RoleQueryPort;
 import com.licode.prodigoerp.auth.domain.model.Permission;
@@ -76,6 +73,7 @@ public class SuperAdminService implements RegisterSuperAdminUseCase {
                 )
         ));
 
+        // Assign the role to the user
         saveAuthoritiesUseCase.assignedRoleToUser(
                 new AssignRoleCommand(
                         fetchedUser.getId(),
@@ -88,7 +86,27 @@ public class SuperAdminService implements RegisterSuperAdminUseCase {
         // Then we fetched/create the default permission
         Optional<Permission> fetchedPermission = roleQueryPort.findPermissionByCode(defaultPermissionCode);
 
+        Permission defaultPermission = fetchedPermission.orElseGet(() -> saveAuthoritiesUseCase.savePermission(
+                new CreatePermissionCommand(
+                        "READ-Only Dashboard: The Default permission that determine if a user Super Admin",
+                        null,
+                        "READ",
+                        "SYSTEM"
+                ),
+                author
+        ));
 
-        return "";
+        // Assign the permission to the user
+        saveAuthoritiesUseCase.assignedPermissionToRole(
+                defaultPermission.getId(),
+                new AssignRoleCommand(
+                        fetchedUser.getId(),
+                        defaultRole.getId(),
+                        null,
+                        author
+                )
+        );
+
+        return "The super admin was created successfully with default permission: " + defaultPermission.getCode();
     }
 }
