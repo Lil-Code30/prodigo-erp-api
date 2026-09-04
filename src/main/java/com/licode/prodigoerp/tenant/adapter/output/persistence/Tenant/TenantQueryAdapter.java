@@ -32,4 +32,9 @@ public class TenantQueryAdapter implements TenantQueryPort {
     public Boolean existsBySlug(String slug) {
         return jpaTenantRepository.existsBySlug(slug);
     }
+
+    @Override
+    public Boolean existsByIdAndActive(UUID id) {
+        return jpaTenantRepository.existsTenantJpaEntityByIdAndStatus(id ,"ACTIVE");
+    }
 }

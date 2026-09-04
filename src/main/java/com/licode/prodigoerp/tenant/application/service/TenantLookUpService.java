@@ -33,5 +33,11 @@ public class TenantLookUpService implements TenantLookUpUseCase {
         return tenant.get();
     }
 
+    // Validate tenant exists and is active
+    @Override
+    public Boolean isValidTenant(UUID tenantId) {
+        return tenantQueryPort.existsByIdAndActive(tenantId);
+    }
+
 
 }

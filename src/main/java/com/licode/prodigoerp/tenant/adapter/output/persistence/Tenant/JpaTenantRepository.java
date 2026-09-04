@@ -15,6 +15,8 @@ public interface JpaTenantRepository extends JpaRepository<TenantJpaEntity, UUID
     boolean existsBySlug(String slug);
     Optional<TenantJpaEntity> findBySlug(String slug);
 
+    boolean existsTenantJpaEntityByIdAndStatus(UUID id, String status);
+
     @Modifying
     @Transactional
     @Query("UPDATE TenantJpaEntity t SET t.status = :status WHERE t.slug = :slug")

@@ -10,4 +10,5 @@ public interface TenantQueryPort {
     Optional<Tenant> findTenantById(UUID id);
     Optional<Tenant> findTenantBySlug(String slug);
     Boolean existsBySlug(String slug);
+    Boolean existsByIdAndActive(UUID id);
 }
