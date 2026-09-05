@@ -1,6 +1,7 @@
 package com.licode.prodigoerp.common.config;
 
 import com.licode.prodigoerp.common.security.JwtAuthFilter;
+import com.licode.prodigoerp.common.security.TenantFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     private final List<String> securePaths;
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final TenantFilter tenantFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,7 +52,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(formLoginConfigurer -> formLoginConfigurer.disable())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(tenantFilter, JwtAuthFilter.class);
 
         return http.build();
     }
